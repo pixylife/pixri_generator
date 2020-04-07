@@ -1,8 +1,8 @@
-package xiLogger
+package pixriLogger
 
 import (
 	"github.com/sirupsen/logrus"
-	"twillo_mobile_generator/pkg/env"
+	"pixri_generator/pkg/env"
 	"os"
 	"runtime"
 	"strconv"
