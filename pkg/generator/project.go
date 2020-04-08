@@ -8,9 +8,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"pixri_generator/pixriLogger"
 	"sync"
 	"time"
-	"pixri_generator/pixriLogger"
 )
 
 type Project struct {
@@ -21,7 +21,6 @@ type Project struct {
 		Value string `json:"value"`
 	} `json:"properties"`
 	root        string
-	entityNames []string
 	packgeroot  string
 }
 
