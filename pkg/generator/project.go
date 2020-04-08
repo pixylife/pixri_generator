@@ -10,16 +10,12 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
-	"twillo_mobile_generator/xiLogger"
+	"pixri_generator/pixriLogger"
 )
 
 type Project struct {
 	Name          string `json:"name"`
-	ChangelogDate string `json:"changelogDate"`
-	Location      string `json:"location"`
 	Status        string `json:"status"`
-	Owner         string `json:"owner"`
-	Tenant        string `json:"tenant"`
 	Properties    []struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
@@ -29,42 +25,40 @@ type Project struct {
 	packgeroot  string
 }
 
-/**
-solutionDir = "resources/solution.json"
-*/
+
 func getProject(projectDir string) *Project {
 
-	xiLogger.Log.Debug("Project Directory : ", projectDir)
+	pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
 	if er != nil {
-		xiLogger.Log.Error("Error while reading project json", er)
+		pixriLogger.Log.Error("Error while reading project json", er)
 	}
 	project := new(Project)
 	if er := json.Unmarshal(pj, &project); er != nil {
-		xiLogger.Log.Error("Error while Unmarshal project json", er)
+		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
 	rootLocation := projectDir + "/generated/" + project.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
-			xiLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
+			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
 			projectInit(project.Name,projectDir)
 		}else{
-			xiLogger.Log.Info("Project root is exist , ignore project Init step")
+			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
 	project.root = filepath.FromSlash(rootLocation)
 	projectInit(project.Name, projectDir)
-	xiLogger.Log.Info("Project root for generated codes :", project.root)
+	pixriLogger.Log.Info("Project root for generated codes :", project.root)
 	return project
 }
 
 func projectInit(projectName string, projectDir string){
-	xiLogger.Log.Info("Initialization of the project :", projectName)
+	pixriLogger.Log.Info("Initialization of the project :", projectName)
 	generatedRoot := projectDir + "/generated"
 	createProject(projectName, generatedRoot)
 	}
 
 func createProject(projectName string, generatedRoot string) {
 	now := time.Now()      // current local time
-	cmd := exec.Command("flutter", "create", "--org", "io.twillo."+projectName+""+string(now.Unix()), "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
+	cmd := exec.Command("flutter", "create", "--org", "io.prixi."+projectName+""+string(now.Unix()), "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
 	displayOutput(*cmd)
 }
 
@@ -78,7 +72,7 @@ func displayOutput(cmd exec.Cmd) {
 	stderr := io.MultiWriter(os.Stderr, &stderrBuf)
 	err := cmd.Start()
 	if err != nil {
-		xiLogger.Log.Error("cmd.Start() failed with '%s'\n", err)
+		pixriLogger.Log.Error("cmd.Start() failed with '%s'\n", err)
 	}
 
 	var wg sync.WaitGroup
@@ -94,11 +88,11 @@ func displayOutput(cmd exec.Cmd) {
 
 	err = cmd.Wait()
 	if err != nil {
-		xiLogger.Log.Error("cmd.Run() failed with %s\n", err)
+		pixriLogger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
 	if errStdout != nil || errStderr != nil {
-		xiLogger.Log.Error("failed to capture stdout or stderr\n")
+		pixriLogger.Log.Error("failed to capture stdout or stderr\n")
 	}
 	outStr, errStr := string(stdoutBuf.Bytes()), string(stderrBuf.Bytes())
-	xiLogger.Log.Error("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
+	pixriLogger.Log.Error("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
 }

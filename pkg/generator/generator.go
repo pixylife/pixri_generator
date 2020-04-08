@@ -1,7 +1,7 @@
 package generator
 
 import (
-	"twillo_mobile_generator/xiLogger"
+	"pixri_generator/pixriLogger"
 )
 
 var project *Project
@@ -11,7 +11,7 @@ var entityFiles []string
 
 func GenerateInit(projectDir string) (*Project) {
 
-	xiLogger.Log.Debug("Generating : Init")
+	pixriLogger.Log.Debug("Generating : Init")
 	project = getProject(projectDir)
 	project.packgeroot = project.Name
 

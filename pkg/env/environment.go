@@ -42,7 +42,6 @@ func SetDefaultAppPort()  {
 }
 
 func GetGenDirectory() string {
-
 	return BasePath + genDirectory
 }
 
