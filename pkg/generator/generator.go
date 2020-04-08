@@ -13,6 +13,6 @@ func GenerateInit(projectDir string) (*Project) {
 	return project
 }
 
-func GenerateControllers(projectDir string,projectName string){
-
+func GenerateControllers(projectDir string,projectName string, generatedRoot string){
+	generateModel(projectDir,projectName,generatedRoot)
 }

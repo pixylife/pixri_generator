@@ -1,35 +1,50 @@
 import 'dart:convert';
 
-class '{{.Name}}' {
-  int id;
-  String name;
-  String email;
-  int age;
+class {{.Name}} {
+  {{- range $v := .Fields}}
+  {{$v.Type}} {{$v.Name}};
+  {{- end}}
 
-  '{{.Name}}'({this.id = 0, this.name, this.email, this.age});
 
-  factory '{{.Name}}'.fromJson(Map<String, dynamic> map) {
-    return '{{.Name}}'(
-        id: map["id"], name: map["name"], email: map["email"], age: map["age"]);
+  {{.Name}}({
+  {{- range $v := .Fields}}
+              this.{{$v.Name}},
+               {{- end}}
+               });
+
+  factory {{.Name}}.fromJson(Map<String, dynamic> map) {
+    return {{.Name}}(
+    {{- range $v := .Fields}}
+      {{$v.Name}}: map[" {{$v.Name}}"],
+      {{- end}}
+      );
   }
 
   Map<String, dynamic> toJson() {
-    return {"id": id, "name": name, "email": email, "age": age};
+  return {
+  {{- range $v := .Fields}}
+        "{{$v.Name}}": {{$v.Name}},
+   {{- end}}
+ };
   }
 
   @override
   String toString() {
-    return ''{{.Name}}'{id: $id, name: $name, email: $email, age: $age}';
+    return '{{.Name}}{'
+     {{- range $v := .Fields}}
+          '{{$v.Name}}: ${{$v.Name}},'
+       {{- end}}
+   '}';
   }
 
 }
 
-List<'{{.Name}}'> '{{.Name}}'FromJson(String jsonData) {
+List<{{.Name}}> {{.Name}}FromJson(String jsonData) {
   final data = json.decode(jsonData);
-  return List<'{{.Name}}'>.from(data.map((item) => '{{.Name}}'.fromJson(item)));
+  return List<{{.Name}}>.from(data.map((item) => {{.Name}}.fromJson(item)));
 }
 
-String '{{.Name}}'ToJson('{{.Name}}' data) {
+String {{.Name}}ToJson({{.Name}} data) {
   final jsonData = data.toJson();
   return json.encode(jsonData);
 }

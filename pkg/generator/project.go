@@ -17,7 +17,7 @@ type Project struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	} `json:"properties"`
-	root        string
+	Root        string
 	packgeroot  string
 }
 
@@ -40,9 +40,9 @@ func getProject(projectDir string) *Project {
 		}else{
 			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
-	project.root = filepath.FromSlash(rootLocation)
+	project.Root = filepath.FromSlash(rootLocation)
 	projectInit(project.Name, projectDir)
-	pixriLogger.Log.Info("Project root for generated codes :", project.root)
+	pixriLogger.Log.Info("Project root for generated codes :", project.Root)
 	return project
 }
 
