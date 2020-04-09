@@ -16,11 +16,10 @@ type Model struct {
 		Name  string `json:"name"`
 		Type string `json:"type"`
 	} `json:"fields"`
-	API []struct{
-		Name  string `json:"name"`
-		Type string `json:"type"`
-		URL string `json:"url"`
-	}
+	API []API `json:"apis"`
+	PackageName string
+	Path string
+	BaseURL string `json:"base_url"`
 }
 
 
@@ -29,9 +28,7 @@ func readEntityJson(projectDir string)[]Model {
 	var files []string
 	var inputs []Model
 
-
 	root := projectDir+"/entity/"
-
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 
 		if !info.IsDir() {
@@ -68,21 +65,25 @@ func readEntityJson(projectDir string)[]Model {
 
 }
 
-func generateModel(projectDir string,projectName string, generatedRoot string)  {
+func generateModel(projectDir string, generatedRoot string,projectName string)  {
 	models := readEntityJson(projectDir)
-
 	for _, model := range models{
-		createModel(generatedRoot,model)
+		model = createModel(generatedRoot,projectName,model)
+		modelData := ModelData{model.Name,model.PackageName,model.Path}
+		api := ApiData{model.Name,model.BaseURL,modelData,model.API}
+		GenerateApi(generatedRoot,api)
 	}
-
 }
 
 
 
-func createModel(generatedRoot string,model Model) {
+func createModel(generatedRoot string,projectName string,model Model) Model {
 	modelRoot := generatedRoot+"/lib/model/"
 	GenerateDir(modelRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/model.tp"))
 	filePath :=modelRoot+model.Name+".dart"
 	controller.TemplateFileWriter(model, filePath, tmpl)
+	model.Path = filePath
+	model.PackageName =projectName+"/src/model/"+model.Name+".dart"
+	return model
 }

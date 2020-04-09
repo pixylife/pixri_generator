@@ -11,11 +11,11 @@ const LOG_LEVEL  =  "LOG_LEVEL"
 
 /*   ############################################### System Constants ###################################### */
 
-const defaultBasePath  = "/tmp/twillo/gen/webapp"
+const defaultBasePath  = "/tmp/pixri/gen/mobileapp"
 const defaultPort  = "5005"
 const genDirectory = "/gen"
 const defaultGitServerPath = "ssh://git@localhost:2222/git-server/repos"
-const defaultGid ="io.xiges.generator.mobileApp"
+const defaultGid ="io.pixri.generator.mobileApp"
 const defaultPoolSize  = 1
 const defaultGenMode  = "BF"
 

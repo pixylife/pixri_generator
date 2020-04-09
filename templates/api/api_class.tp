@@ -1,0 +1,19 @@
+{{define "api"}}
+import 'package:{{.ModelData.Package}}';
+import 'package:http/http.dart' show Client;
+
+class {{.Name}}ApiService {
+  final String baseUrl = "{{.BaseURL}}";
+  Client client = Client();
+}
+
+  {{- range $v := .API}}
+        {{- if eq $v.Name "Create"}}
+                {{template "API-Create" dict "Model" $.ModelData.Name "API" $v}}
+        {{- end}}
+
+        {{- if eq $v.Name "Delete"}}
+                 {{template "API-Delete" dict "Model" $.ModelData.Name "API" $v}}
+        {{- end}}
+  {{- end}}
+{{end}}

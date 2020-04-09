@@ -14,5 +14,5 @@ func GenerateInit(projectDir string) (*Project) {
 }
 
 func GenerateControllers(projectDir string,projectName string, generatedRoot string){
-	generateModel(projectDir,projectName,generatedRoot)
+	generateModel(projectDir,generatedRoot,projectName)
 }

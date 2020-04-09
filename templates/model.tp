@@ -15,7 +15,7 @@ class {{.Name}} {
   factory {{.Name}}.fromJson(Map<String, dynamic> map) {
     return {{.Name}}(
     {{- range $v := .Fields}}
-      {{$v.Name}}: map[" {{$v.Name}}"],
+      {{$v.Name}}: map["{{$v.Name}}"],
       {{- end}}
       );
   }

@@ -1,0 +1,14 @@
+
+    {{define "API-Delete"}}
+  Future<bool> delete{{.Model}}(int id) async {
+    final response = await client.delete(
+      "$baseUrl{{.API.URL}}/$id",
+      headers: {"content-type": "application/json"},
+    );
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+   {{end}}
