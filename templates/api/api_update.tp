@@ -1,8 +1,9 @@
- Future<bool> updateProfile(Profile data) async {
+ {{define "API-Update"}}
+ Future<bool> update{{.Model.Name}}({{.Model.Name}} data) async {
     final response = await client.put(
-      "$baseUrl/api/profile/${data.id}",
+      "$baseUrl{{.API.URL}}/${data.{{.Model.PrimaryField.Name}}}",
       headers: {"content-type": "application/json"},
-      body: ProfileToJson(data),
+      body: {{.Model.Name}}ToJson(data),
     );
     if (response.statusCode == 200) {
       return true;
@@ -10,3 +11,4 @@
       return false;
     }
   }
+    {{end}}

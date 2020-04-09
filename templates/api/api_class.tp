@@ -15,5 +15,13 @@ class {{.Name}}ApiService {
         {{- if eq $v.Name "Delete"}}
                  {{template "API-Delete" dict "Model" $.ModelData "API" $v}}
         {{- end}}
+
+          {{- if eq $v.Name "Update"}}
+                                 {{template "API-Update" dict "Model" $.ModelData "API" $v}}
+                        {{- end}}
+
+        {{- if eq $v.Name "GetList"}}
+                         {{template "API-GetList" dict "Model" $.ModelData "API" $v}}
+                {{- end}}
   {{- end}}
 {{end}}

@@ -18,16 +18,20 @@ type ApiData struct {
 	ModelData ModelData
 	API       []API
 }
+
 type ModelData struct {
 	Name     string `json:"name"`
 	Package  string `json:"package"`
 	Path     string
-	KeyField KeyField
+	PrimaryField PrimaryField
 }
-type KeyField struct {
+
+type PrimaryField struct {
 	Name string `json:"name"`
 	Type string `json:"type"`
 }
+
+
 func GenerateApi(generatedRoot string, api ApiData) {
 	apiRoot := generatedRoot + "/lib/api/"
 	GenerateDir(apiRoot)
@@ -39,7 +43,7 @@ func GenerateApi(generatedRoot string, api ApiData) {
 
 	tmpl, _ = tmpl.ParseFiles("./templates/api/api_class.tp",
 		"./templates/api/api_create.tp",
-		"./templates/api/api_get.tp",
+		"./templates/api/api_get_list.tp",
 		"./templates/api/api_update.tp",
 		"./templates/api/api_delete.tp")
 

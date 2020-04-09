@@ -58,7 +58,6 @@ func readEntityJson(projectDir string)[]Model {
 			pixriLogger.Log.Error(err)
 		}
 
-
 		i := append(inputs, input)
 		inputs = i
 	}
@@ -70,16 +69,16 @@ func generateModel(projectDir string, generatedRoot string,projectName string)  
 	models := readEntityJson(projectDir)
 	for _, model := range models{
 		model = createModel(generatedRoot,projectName,model)
-		var keyField = KeyField{}
+		var primaryKey = PrimaryField{}
 		for _, field:= range model.Fields{
 			if field.Key{
-				keyField.Name = field.Name
-				keyField.Type = field.Type
+				primaryKey.Name = field.Name
+				primaryKey.Type = field.Type
 				break
 			}
 		}
 
-		modelData := ModelData{model.Name,model.PackageName,model.Path,keyField}
+		modelData := ModelData{model.Name,model.PackageName,model.Path,primaryKey}
 		api := ApiData{model.Name,model.BaseURL,modelData,model.API}
 		GenerateApi(generatedRoot,api)
 	}

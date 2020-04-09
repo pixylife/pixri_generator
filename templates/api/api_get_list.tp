@@ -1,4 +1,5 @@
-  Future<List<{{.Model.Name}}>> getListOf{{.Model}}() async {
+{{define "API-GetList"}}
+Future<List<{{.Model.Name}}>> getListOf{{.Model.Name}}() async {
     final response = await client.get("$baseUrl{{.API.URL}}");
     if (response.statusCode == 200) {
       return {{.Model.Name}}FromJson(response.body);
@@ -6,3 +7,4 @@
       return null;
     }
   }
+  {{end}}
