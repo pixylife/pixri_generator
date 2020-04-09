@@ -89,7 +89,7 @@ func generateModel(projectDir string, generatedRoot string,projectName string)  
 func createModel(generatedRoot string,projectName string,model Model) Model {
 	modelRoot := generatedRoot+"/lib/model/"
 	GenerateDir(modelRoot)
-	tmpl := template.Must(template.ParseFiles("./templates/model.tp"))
+	tmpl := template.Must(template.ParseFiles("./templates/controller/model.tp"))
 	filePath :=modelRoot+model.Name+".dart"
 	controller.TemplateFileWriter(model, filePath, tmpl)
 	model.Path = filePath
