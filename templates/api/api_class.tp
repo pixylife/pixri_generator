@@ -8,6 +8,7 @@ class {{.Name}}ApiService {
 }
 
   {{- range $v := .API}}
+
         {{- if eq $v.Name "Create"}}
                 {{template "API-Create" dict "Model" $.ModelData "API" $v}}
         {{- end}}
@@ -16,12 +17,19 @@ class {{.Name}}ApiService {
                  {{template "API-Delete" dict "Model" $.ModelData "API" $v}}
         {{- end}}
 
-          {{- if eq $v.Name "Update"}}
-                                 {{template "API-Update" dict "Model" $.ModelData "API" $v}}
-                        {{- end}}
+        {{- if eq $v.Name "Update"}}
+                  {{template "API-Update" dict "Model" $.ModelData "API" $v}}
+        {{- end}}
+
+        {{- if eq $v.Name "Find"}}
+                  {{template "API-Find" dict "Model" $.ModelData "API" $v}}
+         {{- end}}
+
 
         {{- if eq $v.Name "GetList"}}
-                         {{template "API-GetList" dict "Model" $.ModelData "API" $v}}
-                {{- end}}
+                  {{template "API-GetList" dict "Model" $.ModelData "API" $v}}
+        {{- end}}
+
+
   {{- end}}
 {{end}}

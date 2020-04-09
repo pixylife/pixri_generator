@@ -45,7 +45,8 @@ func GenerateApi(generatedRoot string, api ApiData) {
 		"./templates/api/api_create.tp",
 		"./templates/api/api_get_list.tp",
 		"./templates/api/api_update.tp",
-		"./templates/api/api_delete.tp")
+		"./templates/api/api_delete.tp",
+		"./templates/api/api_get.tp")
 
 	filePath := apiRoot + api.Name + "_api_service.dart"
 	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
