@@ -1,8 +1,8 @@
 
     {{define "API-Delete"}}
-  Future<bool> delete{{.Model}}(int id) async {
+  Future<bool> delete{{.Model.Name}}({{.Model.KeyField.Type}} {{.Model.KeyField.Name}}) async {
     final response = await client.delete(
-      "$baseUrl{{.API.URL}}/$id",
+      "$baseUrl{{.API.URL}}/${{.Model.KeyField.Name}}",
       headers: {"content-type": "application/json"},
     );
     if (response.statusCode == 200) {

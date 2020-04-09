@@ -15,6 +15,7 @@ type Model struct {
 	Fields    []struct {
 		Name  string `json:"name"`
 		Type string `json:"type"`
+		Key bool `json:"key"`
 	} `json:"fields"`
 	API []API `json:"apis"`
 	PackageName string
@@ -69,7 +70,16 @@ func generateModel(projectDir string, generatedRoot string,projectName string)  
 	models := readEntityJson(projectDir)
 	for _, model := range models{
 		model = createModel(generatedRoot,projectName,model)
-		modelData := ModelData{model.Name,model.PackageName,model.Path}
+		var keyField = KeyField{}
+		for _, field:= range model.Fields{
+			if field.Key{
+				keyField.Name = field.Name
+				keyField.Type = field.Type
+				break
+			}
+		}
+
+		modelData := ModelData{model.Name,model.PackageName,model.Path,keyField}
 		api := ApiData{model.Name,model.BaseURL,modelData,model.API}
 		GenerateApi(generatedRoot,api)
 	}

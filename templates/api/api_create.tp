@@ -1,9 +1,9 @@
   {{define "API-Create"}}
-  Future<bool> create{{.Model}}({{.Model}} data) async {
+  Future<bool> create{{.Model.Name}}({{.Model.Name}} data) async {
     final response = await client.post(
       "$baseUrl{{.API.URL}}",
       headers: {"content-type": "application/json"},
-      body: {{.Model}}ToJson(data),
+      body: {{.Model.Name}}ToJson(data),
     );
     if (response.statusCode == 200) {
       return true;

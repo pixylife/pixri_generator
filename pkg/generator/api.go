@@ -7,25 +7,29 @@ import (
 )
 
 type API struct {
-	Name  string `json:"name"`
+	Name string `json:"name"`
 	Type string `json:"type"`
-	URL string `json:"url"`
+	URL  string `json:"url"`
 }
 
 type ApiData struct {
-	Name string `json:"name"`
-	BaseURL string `json:"base_url"`
+	Name      string `json:"name"`
+	BaseURL   string `json:"base_url"`
 	ModelData ModelData
-	API []API
+	API       []API
 }
-type ModelData struct{
-Name string `json:"name"`
-Package string `json:"package"`
-Path string
+type ModelData struct {
+	Name     string `json:"name"`
+	Package  string `json:"package"`
+	Path     string
+	KeyField KeyField
 }
-
-func GenerateApi(generatedRoot string,api ApiData) {
-	apiRoot := generatedRoot+"/lib/api/"
+type KeyField struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+func GenerateApi(generatedRoot string, api ApiData) {
+	apiRoot := generatedRoot + "/lib/api/"
 	GenerateDir(apiRoot)
 
 	tmpl := template.New("api")
@@ -39,8 +43,8 @@ func GenerateApi(generatedRoot string,api ApiData) {
 		"./templates/api/api_update.tp",
 		"./templates/api/api_delete.tp")
 
-	filePath :=apiRoot+api.Name+"_api_service.dart"
-	controller.TemplateFileWriterByName(api, filePath, tmpl,"api")
+	filePath := apiRoot + api.Name + "_api_service.dart"
+	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
 }
 
 func dict(values ...interface{}) (map[string]interface{}, error) {

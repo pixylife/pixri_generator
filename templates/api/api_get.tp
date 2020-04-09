@@ -1,7 +1,7 @@
-  Future<List<Profile>> getProfiles() async {
-    final response = await client.get("$baseUrl/api/profile");
+  Future<List<{{.Model.Name}}>> getListOf{{.Model}}() async {
+    final response = await client.get("$baseUrl{{.API.URL}}");
     if (response.statusCode == 200) {
-      return ProfileFromJson(response.body);
+      return {{.Model.Name}}FromJson(response.body);
     } else {
       return null;
     }
