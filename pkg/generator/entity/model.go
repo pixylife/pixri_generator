@@ -1,4 +1,4 @@
-package generator
+package entity
 
 import (
 	"encoding/json"
@@ -16,6 +16,7 @@ type Model struct {
 		Name  string `json:"name"`
 		Type string `json:"type"`
 		Key bool `json:"key"`
+		AutoGen bool `json:"auto_gen"`
 	} `json:"fields"`
 	API []API `json:"apis"`
 	PackageName string
@@ -65,7 +66,8 @@ func readEntityJson(projectDir string)[]Model {
 
 }
 
-func generateModel(projectDir string, generatedRoot string,projectName string)  {
+func GenerateModel(projectDir string, generatedRoot string,projectName string)  []Model{
+	var modelList []Model
 	models := readEntityJson(projectDir)
 	for _, model := range models{
 		model = createModel(generatedRoot,projectName,model)
@@ -79,16 +81,19 @@ func generateModel(projectDir string, generatedRoot string,projectName string)  
 		}
 
 		modelData := ModelData{model.Name,model.PackageName,model.Path,primaryKey}
-		api := ApiData{model.Name,model.BaseURL,modelData,model.API}
-		GenerateApi(generatedRoot,api)
+		api := ApiData{model.Name,model.BaseURL,modelData,model.API,"",""}
+		api =GenerateApi(generatedRoot,api)
+		api.PackageName = projectName+"/src/api/"+api.Name+"_api_service.dart"
+		modelList = append(modelList, model)
 	}
+	return modelList
 }
 
 
 
 func createModel(generatedRoot string,projectName string,model Model) Model {
 	modelRoot := generatedRoot+"/lib/model/"
-	GenerateDir(modelRoot)
+	controller.GenerateDir(modelRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/controller/model.tp"))
 	filePath :=modelRoot+model.Name+".dart"
 	controller.TemplateFileWriter(model, filePath, tmpl)

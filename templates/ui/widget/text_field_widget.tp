@@ -1,0 +1,17 @@
+Widget _buildTextField{{.Name}}() {
+    return TextField(
+      controller: _controller{{.Name}},
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: "{{.Name}}",
+        errorText: _isField{{.Name}}Valid == null || _isField{{.Name}}Valid
+            ? null
+            : "{{.Name}} is required",
+      ),
+      onChanged: (value) {
+        bool isFieldValid = value.trim().isNotEmpty;
+        if (isFieldValid != _isField{{.Name}}Valid) {
+          setState(() => _isField{{.Name}}Valid = isFieldValid);
+        }
+      },
+    );

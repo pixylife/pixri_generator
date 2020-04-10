@@ -1,4 +1,4 @@
-package generator
+package entity
 
 import (
 	"errors"
@@ -17,6 +17,8 @@ type ApiData struct {
 	BaseURL   string `json:"base_url"`
 	ModelData ModelData
 	API       []API
+	PackageName string
+	Path string
 }
 
 type ModelData struct {
@@ -32,9 +34,9 @@ type PrimaryField struct {
 }
 
 
-func GenerateApi(generatedRoot string, api ApiData) {
+func GenerateApi(generatedRoot string, api ApiData) ApiData{
 	apiRoot := generatedRoot + "/lib/api/"
-	GenerateDir(apiRoot)
+	controller.GenerateDir(apiRoot)
 
 	tmpl := template.New("api")
 	funcMap := template.FuncMap{}
@@ -50,6 +52,9 @@ func GenerateApi(generatedRoot string, api ApiData) {
 
 	filePath := apiRoot + api.Name + "_api_service.dart"
 	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
+
+	api.Path = filePath
+	return api
 }
 
 func dict(values ...interface{}) (map[string]interface{}, error) {

@@ -1,4 +1,4 @@
-package generator
+package controller
 
 import ("os"
 	"path/filepath"

@@ -1,0 +1,89 @@
+{{define "UI-RaisedButton"}}
+RaisedButton(
+                    child: Text(
+                      widget.profile == null
+                          ? "Submit".toUpperCase()
+                          : "Update {{.Name}}".toUpperCase(),
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () {
+                      if (
+                      {{$n := len  .Fields}}
+                      {{- range $i,$v := .Fields}}
+                          {{- if not $v.AutoGen}}
+                            {{- if $i}}
+                                _isField{{$v.Name}}Valid == null ||
+                                !_isField{{$v.Name}}Valid ||
+                            {{- end}}
+                        {{- if eq (plus1 $i) $n}}
+                            _isField{{$v.Name}}Valid == null ||
+                            !_isField{{$v.Name}}Valid
+                            {{- end}}
+                          {{- end}}
+                      {{- end}}
+                          ) {
+                        _scaffoldState.currentState.showSnackBar(
+                          SnackBar(
+                            content: Text("Please fill all fields"),
+                          ),
+                        );
+                        return;
+                      }
+                      setState(() => _isLoading = true);
+
+                      {{- range $v := .Fields}}
+                          {{- if not $v.AutoGen}}
+
+                            {{- if eq $v.Type "String"}}
+                                 String {{$v.Name}} = _controller{{$v.Name}}.text.toString();
+                            {{- end}}
+
+                             {{- if eq $v.Type "int"}}
+                                   int {{$v.Name}} = int.parse(_controller{{$v.Name}}.text.toString());
+                              {{- end}}
+                          {{- end}}
+                      {{- end}}
+
+
+                      {{.Name}} {{.Name}} =
+                          {{.Name}}(
+                      {{- range $v := .Fields}}
+                          {{- if not $v.AutoGen}}
+                                  {{$v.Name}}: {{$v.Name}}
+                          {{- end}}
+                      {{- end}});
+                      if (widget.{{.Name}} == null) {
+                        {{.Name}}ApiService.create{{.Name}}({{.Name}}).then((isSuccess) {
+                          setState(() => _isLoading = false);
+                          if (isSuccess) {
+                            Navigator.pop(_scaffoldState.currentState.context);
+                          } else {
+                            _scaffoldState.currentState.showSnackBar(SnackBar(
+                              content: Text("Submit data failed"),
+                            ));
+                          }
+                        });
+                      } else {
+
+                       {{- range $v := .Fields}}
+                             {{- if $v.Key }}
+                                      {{$.Name}}.{{$v.Name}} = widget.{{$.Name}}.{{$v.Name}};
+                             {{- end}}
+                       {{- end}});
+                        {{.Name}}ApiService.update{{.Name}}({{.Name}}).then((isSuccess) {
+                          setState(() => _isLoading = false);
+                          if (isSuccess) {
+                            Navigator.pop(_scaffoldState.currentState.context);
+                          } else {
+                            _scaffoldState.currentState.showSnackBar(SnackBar(
+                              content: Text("Update data failed"),
+                            ));
+                          }
+                        });
+                      }
+                    },
+                    color: Colors.orange[600],
+                  ),
+{{end}}

@@ -2,6 +2,8 @@ package generator
 
 import (
 	"pixri_generator/pixriLogger"
+	"pixri_generator/pkg/generator/entity"
+	"pixri_generator/pkg/generator/ui"
 )
 
 var project *Project
@@ -14,5 +16,10 @@ func GenerateInit(projectDir string) (*Project) {
 }
 
 func GenerateControllers(projectDir string,projectName string, generatedRoot string){
-	generateModel(projectDir,generatedRoot,projectName)
+	models := entity.GenerateModel(projectDir,generatedRoot,projectName)
+	for _,model := range models {
+		ui.CreateFormUI(generatedRoot, projectName, model)
+	}
+
 }
+
