@@ -89,4 +89,10 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
       ),
     );
   }
+   {{- range $v := .Fields}}
+         {{- if not $v.AutoGen}}
+              {{template "UI-TextField" $v}}
+         {{- end}}
+    {{- end}}
+
  {{end}}

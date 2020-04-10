@@ -1,7 +1,8 @@
+{{define "UI-TextField"}}
 Widget _buildTextField{{.Name}}() {
     return TextField(
       controller: _controller{{.Name}},
-      keyboardType: TextInputType.emailAddress,
+      keyboardType: TextInputType.text,
       decoration: InputDecoration(
         labelText: "{{.Name}}",
         errorText: _isField{{.Name}}Valid == null || _isField{{.Name}}Valid
@@ -15,3 +16,4 @@ Widget _buildTextField{{.Name}}() {
         }
       },
     );
+{{end}}
