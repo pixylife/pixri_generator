@@ -3,6 +3,7 @@ package entity
 import (
 	"errors"
 	"pixri_generator/pkg/controller"
+	"pixri_generator/pkg/env"
 	"text/template"
 )
 
@@ -50,7 +51,7 @@ func GenerateApi(generatedRoot string, api ApiData) ApiData{
 		"./templates/api/api_delete.tp",
 		"./templates/api/api_get.tp")
 
-	filePath := apiRoot + api.Name + "_api_service.dart"
+	filePath := apiRoot + api.Name + env.API_SUFFIX
 	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
 
 	api.Path = filePath

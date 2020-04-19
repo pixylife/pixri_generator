@@ -4,6 +4,7 @@ import (
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/generator/entity"
 	"text/template"
+	"pixri_generator/pkg/env"
 )
 
 var fns = template.FuncMap{
@@ -21,7 +22,7 @@ func CreateFormUI(generatedRoot string, projectName string, model entity.Model) 
 	tmpl, _ = tmpl.ParseFiles("./templates/ui/form/basic_input_form.tp",
 										"./templates/ui/widget/raised_button_widget.tp",
 										"./templates/ui/widget/text_field_widget.tp")
-	filePath := uiRoot + model.Name + "FormView.dart"
+	filePath := uiRoot + model.Name + env.FormViewSuffix
 	controller.TemplateFileWriterByName(model, filePath, tmpl, "UI-Basic-Form")
 	return model
 }
