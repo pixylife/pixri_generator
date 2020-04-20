@@ -3,6 +3,8 @@ package main
 import "pixri_generator/pkg/generator"
 
 func main()  {
-	project := generator.GenerateInit("sample")
-	generator.GenerateControllers("sample",project.Name,project.Root)
+	var projectDir = "sample";
+	project := generator.GenerateInit(projectDir)
+	generator.GenerateControllers(projectDir,project.Name,project.Root)
+	generator.ModifyProjectFiles(projectDir,*project)
 }

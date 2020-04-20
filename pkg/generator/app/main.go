@@ -5,7 +5,7 @@ import (
 	"text/template"
 )
 
-func createMain(generatedRoot string,projectName string)  {
+func CreateMain(generatedRoot string,projectName string)  {
 	modelRoot := generatedRoot+"/lib/"
 	controller.GenerateDir(modelRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/app/main.tp"))

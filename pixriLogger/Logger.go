@@ -16,11 +16,8 @@ func init()  {
 
 	Log.SetFormatter(&logrus.TextFormatter{DisableColors: false})
 
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
 	Log.SetOutput(os.Stdout)
 
-	// Only log the warning severity or above.
 	if  strings.EqualFold(env.GetLoglevel(),"info"){
 		Log.SetLevel(logrus.InfoLevel)
 	} else if strings.EqualFold(env.GetLoglevel(),"debug") {

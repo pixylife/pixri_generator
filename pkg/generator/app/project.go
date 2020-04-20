@@ -1,4 +1,4 @@
-package generator
+package app
 
 import (
 	"encoding/json"
@@ -13,16 +13,17 @@ import (
 type Project struct {
 	Name          string `json:"name"`
 	Status        string `json:"status"`
+	Description string `json:"description"`
 	Properties    []struct {
 		Name  string `json:"name"`
 		Value string `json:"value"`
 	} `json:"properties"`
-	Root        string
-	packgeroot  string
+	Root       string
+	Packgeroot string
 }
 
 
-func getProject(projectDir string) *Project {
+func GetProject(projectDir string) *Project {
 
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
