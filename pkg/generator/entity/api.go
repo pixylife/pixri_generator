@@ -1,42 +1,98 @@
 package entity
 
 import (
+	"encoding/json"
 	"errors"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/env"
 	"text/template"
 )
 
+
 type API struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
-	URL  string `json:"url"`
-}
-
-type ApiData struct {
-	Name      string `json:"name"`
-	BaseURL   string `json:"base_url"`
-	ModelData ModelData
-	API       []API
-	PackageName string
-	Path string
-}
-
-type ModelData struct {
-	Name     string `json:"name"`
-	Package  string `json:"package"`
-	Path     string
-	PrimaryField PrimaryField
-}
-
-type PrimaryField struct {
-	Name string `json:"name"`
-	Type string `json:"type"`
+	Name       string `json:"name"`
+	MethodName string `json:"methodName"`
+	Type       string `json:"type"`
+	Operation  string `json:"operation"`
+	Resource   string `json:"resource"`
+	Target     struct {
+		Type string `json:"type"`
+		Name string `json:"name"`
+	} `json:"target"`
+	Params []struct {
+		Type      string `json:"type"`
+		InputType string `json:"inputType"`
+		InputName string `json:"inputName"`
+	} `json:"params"`
+	Ruleid string `json:"ruleid"`
+	Return struct {
+		Name   string `json:"name"`
+		Type   string `json:"type"`
+		Record string `json:"record"`
+	} `json:"return"`
 }
 
 
-func GenerateApi(generatedRoot string, api ApiData) ApiData{
-	apiRoot := generatedRoot + "/lib/api/"
+func readAPIJson(projectDir string)[]API {
+
+	var files []string
+	var inputs []API
+
+	root := projectDir+"/api/"
+	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+
+		if !info.IsDir() {
+			files = append(files, path)
+		}
+		return nil
+	})
+	if err != nil {
+		pixriLogger.Log.Error(err)
+	}
+	for _, file := range files {
+		pixriLogger.Log.Debug(file)
+	}
+	for _, file := range files {
+		pixriLogger.Log.Debug(file)
+		jsonFile, err := os.Open(file)
+		if err != nil {
+			pixriLogger.Log.Error(err)
+		}
+		defer jsonFile.Close()
+		byteValue, _ := ioutil.ReadAll(jsonFile)
+		var input API
+
+		err = json.Unmarshal(byteValue, &input)
+		if err != nil {
+			pixriLogger.Log.Error(err)
+		}
+
+		i := append(inputs, input)
+		inputs = i
+	}
+	return inputs
+
+}
+
+func GenerateAPI(projectDir string,generatedRoot string){
+	apis :=readAPIJson(projectDir)
+	for _,api:= range apis{
+		createApi(generatedRoot,api)
+	}
+}
+
+
+func createApi(generatedRoot string,api API){
+	var apiRoot string
+	if api.Type == env.ENTITY_API{
+		apiRoot = generatedRoot + "/lib/api/"+api.Target.Name+"/"
+	}else {
+		apiRoot = generatedRoot + "/lib/api/"
+	}
 	controller.GenerateDir(apiRoot)
 
 	tmpl := template.New("api")
@@ -53,9 +109,6 @@ func GenerateApi(generatedRoot string, api ApiData) ApiData{
 
 	filePath := apiRoot + api.Name + env.API_SUFFIX
 	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
-
-	api.Path = filePath
-	return api
 }
 
 func dict(values ...interface{}) (map[string]interface{}, error) {

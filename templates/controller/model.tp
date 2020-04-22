@@ -1,29 +1,33 @@
 import 'dart:convert';
 
 class {{.Name}} {
+  int id;
   {{- range $v := .Fields}}
-  {{$v.Type}} {{$v.Name}};
+  {{$v.FieldType}} {{$v.FieldName}};
   {{- end}}
 
 
   {{.Name}}({
+               this.id,
   {{- range $v := .Fields}}
-              this.{{$v.Name}},
+              this.{{$v.FieldName}},
                {{- end}}
                });
 
   factory {{.Name}}.fromJson(Map<String, dynamic> map) {
     return {{.Name}}(
+          id: map["id"],
     {{- range $v := .Fields}}
-      {{$v.Name}}: map["{{$v.Name}}"],
+      {{$v.FieldName}}: map["{{$v.FieldName}}"],
       {{- end}}
       );
   }
 
   Map<String, dynamic> toJson() {
   return {
+          "id": id,
   {{- range $v := .Fields}}
-        "{{$v.Name}}": {{$v.Name}},
+        "{{$v.FieldName}}": {{$v.FieldName}},
    {{- end}}
  };
   }
@@ -31,8 +35,9 @@ class {{.Name}} {
   @override
   String toString() {
     return '{{.Name}}{'
+              'id: $id,'
      {{- range $v := .Fields}}
-          '{{$v.Name}}: ${{$v.Name}},'
+          '{{$v.FieldName}}: ${{$v.FieldName}},'
        {{- end}}
    '}';
   }

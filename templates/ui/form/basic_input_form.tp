@@ -19,10 +19,8 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
   {{.Name}}ApiService _apiService = {{.Name}}ApiService();
 
    {{- range $v := .Fields}}
-        {{- if not $v.AutoGen}}
-            bool _isField{{$v.Name}}Valid;
-            TextEditingController _controller{{$v.Name}} = TextEditingController();
-        {{- end}}
+            bool _isField{{$v.FieldName}}Valid;
+            TextEditingController _controller{{$v.FieldName}} = TextEditingController();
    {{- end}}
 
   @override
@@ -30,10 +28,8 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
     if (widget.{{.Name}} != null) {
 
      {{- range $v := .Fields}}
-        {{- if not $v.AutoGen}}
-            _isField{{$v.Name}}Valid = true;
-            _controller{{$v.Name}}.text = widget.{{$.Name}}.{{$v.Name}}.toString();
-        {{- end}}
+            _isField{{$v.FieldName}}Valid = true;
+            _controller{{$v.FieldName}}.text = widget.{{$.Name}}.{{$v.FieldName}}.toString();
      {{- end}}
     }
     super.initState();
@@ -58,9 +54,7 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                  {{- range $v := .Fields}}
-                    {{- if not $v.AutoGen}}
-                        _buildTextField{{$v.Name}}(),
-                    {{- end}}
+                        _buildTextField{{$v.FieldName}}(),
                  {{- end}}
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -90,9 +84,7 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
     );
   }
    {{- range $v := .Fields}}
-         {{- if not $v.AutoGen}}
               {{template "UI-TextField" $v}}
-         {{- end}}
     {{- end}}
 
  {{end}}

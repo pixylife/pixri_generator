@@ -2,7 +2,7 @@
 import 'package:{{.ModelData.Package}}';
 import 'package:http/http.dart' show Client;
 
-class {{.Name}}ApiService {
+class {{.MethodName}} {
   final String baseUrl = "{{.BaseURL}}";
   Client client = Client();
 }

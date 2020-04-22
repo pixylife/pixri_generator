@@ -1,18 +1,18 @@
 {{define "UI-TextField"}}
-Widget _buildTextField{{.Name}}() {
+Widget _buildTextField{{.FieldName}}() {
     return TextField(
-      controller: _controller{{.Name}},
+      controller: _controller{{.FieldName}},
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
-        labelText: "{{.Name}}",
-        errorText: _isField{{.Name}}Valid == null || _isField{{.Name}}Valid
+        labelText: "{{.FieldUIName}}",
+        errorText: _isField{{.FieldName}}Valid == null || _isField{{.FieldName}}Valid
             ? null
-            : "{{.Name}} is required",
+            : "{{.FieldUIName}} is required",
       ),
       onChanged: (value) {
         bool isFieldValid = value.trim().isNotEmpty;
-        if (isFieldValid != _isField{{.Name}}Valid) {
-          setState(() => _isField{{.Name}}Valid = isFieldValid);
+        if (isFieldValid != _isField{{.FieldName}}Valid) {
+          setState(() => _isField{{.FieldName}}Valid = isFieldValid);
         }
       },
     );

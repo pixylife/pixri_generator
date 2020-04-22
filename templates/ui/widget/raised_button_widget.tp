@@ -12,17 +12,15 @@ RaisedButton(
                       if (
                       {{$n := len  .Fields}}
                       {{- range $i,$v := .Fields}}
-                          {{- if not $v.AutoGen}}
                             {{- if $i}}
-                                _isField{{$v.Name}}Valid == null ||
-                                !_isField{{$v.Name}}Valid ||
+                                _isField{{$v.FieldName}}Valid == null ||
+                                !_isField{{$v.FieldName}}Valid ||
                             {{- end}}
                         {{- if eq (plus1 $i) $n}}
-                            _isField{{$v.Name}}Valid == null ||
-                            !_isField{{$v.Name}}Valid
+                            _isField{{$v.FieldName}}Valid == null ||
+                            !_isField{{$v.FieldName}}Valid
                             {{- end}}
                           {{- end}}
-                      {{- end}}
                           ) {
                         _scaffoldState.currentState.showSnackBar(
                           SnackBar(
@@ -34,25 +32,19 @@ RaisedButton(
                       setState(() => _isLoading = true);
 
                       {{- range $v := .Fields}}
-                          {{- if not $v.AutoGen}}
-
-                            {{- if eq $v.Type "String"}}
-                                 String {{$v.Name}} = _controller{{$v.Name}}.text.toString();
+                            {{- if eq $v.FieldType "String"}}
+                                 String {{$v.FieldName}} = _controller{{$v.FieldName}}.text.toString();
                             {{- end}}
 
-                             {{- if eq $v.Type "int"}}
-                                   int {{$v.Name}} = int.parse(_controller{{$v.Name}}.text.toString());
+                             {{- if eq $v.FieldType "int"}}
+                                   int {{$v.FieldName}} = int.parse(_controller{{$v.FieldName}}.text.toString());
                               {{- end}}
                           {{- end}}
-                      {{- end}}
-
 
                       {{.Name}} {{.Name}} =
                           {{.Name}}(
                       {{- range $v := .Fields}}
-                          {{- if not $v.AutoGen}}
-                                  {{$v.Name}}: {{$v.Name}}
-                          {{- end}}
+                                  {{$v.FieldName}}: {{$v.FieldName}}
                       {{- end}});
                       if (widget.{{.Name}} == null) {
                         {{.Name}}ApiService.create{{.Name}}({{.Name}}).then((isSuccess) {
@@ -67,11 +59,9 @@ RaisedButton(
                         });
                       } else {
 
-                       {{- range $v := .Fields}}
-                             {{- if $v.Key }}
-                                      {{$.Name}}.{{$v.Name}} = widget.{{$.Name}}.{{$v.Name}};
-                             {{- end}}
-                       {{- end}});
+
+                           {{.Name}}.id = widget.{{.Name}}.id;
+
                         {{.Name}}ApiService.update{{.Name}}({{.Name}}).then((isSuccess) {
                           setState(() => _isLoading = false);
                           if (isSuccess) {
