@@ -7,9 +7,9 @@ import (
 	"pixri_generator/pkg/generator/ui"
 )
 
-var project *app.Project
+var project app.Project
 
-func GenerateInit(projectDir string) *app.Project {
+func GenerateInit(projectDir string) app.Project {
 	pixriLogger.Log.Debug("Generating : Init")
 	project = app.GetProject(projectDir)
 	project.Packgeroot = project.Name

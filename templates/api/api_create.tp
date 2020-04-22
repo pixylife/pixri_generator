@@ -1,7 +1,7 @@
   {{define "API-Create"}}
   Future<bool> create{{.Model.Name}}({{.Model.Name}} data) async {
     final response = await client.post(
-      "$baseUrl{{.API.URL}}",
+      "$baseUrl{{.API.Resource}}",
       headers: {"content-type": "application/json"},
       body: {{.Model.Name}}ToJson(data),
     );

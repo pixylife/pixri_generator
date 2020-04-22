@@ -1,7 +1,7 @@
  {{define "API-Update"}}
  Future<bool> update{{.Model.Name}}({{.Model.Name}} data) async {
     final response = await client.put(
-      "$baseUrl{{.API.URL}}/${data.{{.Model.PrimaryField.Name}}}",
+      "$baseUrl{{.API.Resource}}/${data.id}",
       headers: {"content-type": "application/json"},
       body: {{.Model.Name}}ToJson(data),
     );

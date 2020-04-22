@@ -22,29 +22,28 @@ type Project struct {
 	Packgeroot string
 }
 
+var ProjectData = Project{}
 
-func GetProject(projectDir string) *Project {
-
+func GetProject(projectDir string) Project {
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
 	if er != nil {
 		pixriLogger.Log.Error("Error while reading project json", er)
 	}
-	project := new(Project)
-	if er := json.Unmarshal(pj, &project); er != nil {
+	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-	rootLocation := projectDir + "/generated/" + project.Name
+	rootLocation := projectDir + "/generated/" + ProjectData.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
-			projectInit(project.Name,projectDir)
+			projectInit(ProjectData.Name,projectDir)
 		}else{
 			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
-	project.Root = filepath.FromSlash(rootLocation)
-	projectInit(project.Name, projectDir)
-	pixriLogger.Log.Info("Project root for generated codes :", project.Root)
-	return project
+	ProjectData.Root = filepath.FromSlash(rootLocation)
+	projectInit(ProjectData.Name, projectDir)
+	pixriLogger.Log.Info("Project root for generated codes :", ProjectData.Root)
+	return ProjectData
 }
 
 func projectInit(projectName string, projectDir string){

@@ -1,33 +1,35 @@
 {{define "api"}}
-import 'package:{{.ModelData.Package}}';
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
 import 'package:http/http.dart' show Client;
 
 class {{.model.Name}} {
-  final String baseUrl = "{{.BaseURL}}";
+  final String baseUrl = ;
   Client client = Client();
 }
 
   {{- range $v := .api}}
 
-        {{- if eq $v.Name "Create"}}
-                {{template "API-Create" dict "Model" $.ModelData "API" $v}}
+        {{- if eq $v.Type "Create"}}
+                {{template "API-Create" dict "Model" $.model "API" $v}}
         {{- end}}
 
-        {{- if eq $v.Name "Delete"}}
-                 {{template "API-Delete" dict "Model" $.ModelData "API" $v}}
+        {{- if eq $v.Type "Delete"}}
+                 {{template "API-Delete" dict "Model" $.model "API" $v}}
         {{- end}}
 
-        {{- if eq $v.Name "Update"}}
-                  {{template "API-Update" dict "Model" $.ModelData "API" $v}}
+        {{- if eq $v.Type "Update"}}
+                  {{template "API-Update" dict "Model" $.model "API" $v}}
         {{- end}}
 
-        {{- if eq $v.Name "Find"}}
-                  {{template "API-Find" dict "Model" $.ModelData "API" $v}}
+        {{- if eq $v.Type "Find"}}
+                  {{template "API-Find" dict "Model" $.model "API" $v}}
          {{- end}}
 
 
-        {{- if eq $v.Name "GetList"}}
-                  {{template "API-GetList" dict "Model" $.ModelData "API" $v}}
+        {{- if eq $v.Type "GetList"}}
+                  {{template "API-GetList" dict "Model" $.model "API" $v}}
         {{- end}}
 
 

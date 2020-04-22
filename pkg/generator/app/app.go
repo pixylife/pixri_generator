@@ -5,6 +5,7 @@ import (
 	"text/template"
 )
 
+
 func CreateAppClass(project Project)  {
 	fileRoot := project.Root+"/lib/"
 	controller.GenerateDir(fileRoot)

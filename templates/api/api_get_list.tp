@@ -1,6 +1,6 @@
 {{define "API-GetList"}}
 Future<List<{{.Model.Name}}>> getListOf{{.Model.Name}}() async {
-    final response = await client.get("$baseUrl{{.API.URL}}");
+    final response = await client.get("$baseUrl{{.API.Resource}}");
     if (response.statusCode == 200) {
       return {{.Model.Name}}FromJson(response.body);
     } else {
