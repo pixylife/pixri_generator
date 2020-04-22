@@ -2,12 +2,12 @@
 import 'package:{{.ModelData.Package}}';
 import 'package:http/http.dart' show Client;
 
-class {{.MethodName}} {
+class {{.model.Name}} {
   final String baseUrl = "{{.BaseURL}}";
   Client client = Client();
 }
 
-  {{- range $v := .API}}
+  {{- range $v := .api}}
 
         {{- if eq $v.Name "Create"}}
                 {{template "API-Create" dict "Model" $.ModelData "API" $v}}

@@ -19,24 +19,26 @@ type API struct {
 	Type       string `json:"type"`
 	Operation  string `json:"operation"`
 	Resource   string `json:"resource"`
-	Target     struct {
-		Type string `json:"type"`
-		Name string `json:"name"`
-	} `json:"target"`
+	Target   Target `json:"target"`
 	Params []struct {
 		Type      string `json:"type"`
 		InputType string `json:"inputType"`
 		InputName string `json:"inputName"`
 	} `json:"params"`
 	Ruleid string `json:"ruleid"`
-	Return struct {
-		Name   string `json:"name"`
-		Type   string `json:"type"`
-		Record string `json:"record"`
-	} `json:"return"`
+	Return Return `json:"return"`
 }
 
+type Target     struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
+}
 
+type Return struct {
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+	Record string `json:"record"`
+}
 func readAPIJson(projectDir string)[]API {
 
 	var files []string
@@ -77,19 +79,33 @@ func readAPIJson(projectDir string)[]API {
 	return inputs
 
 }
-
+/*
 func GenerateAPI(projectDir string,generatedRoot string){
 	apis :=readAPIJson(projectDir)
 	for _,api:= range apis{
 		createApi(generatedRoot,api)
 	}
 }
+*/
 
+func GenerateApi(generatedRoot string, model Model) {
+	apis := []API{}
+	for _, apiType := range env.GetSupportedCruds(){
+		api := API{}
+		api.Name = apiType+model.Name
+		api.Type= apiType
+		api.MethodName = apiType+model.Name
+		api.Resource = controller.ToPlural(model.Name)
+		apis=append(apis, api)
+	}
+	createModelApi(generatedRoot,env.ENTITY_API,model,apis)
 
-func createApi(generatedRoot string,api API){
+}
+
+func createModelApi(generatedRoot string,t string,model Model,api []API){
 	var apiRoot string
-	if api.Type == env.ENTITY_API{
-		apiRoot = generatedRoot + "/lib/api/"+api.Target.Name+"/"
+	if t == env.ENTITY_API{
+		apiRoot = generatedRoot + "/lib/api/"+model.Name+"/"
 	}else {
 		apiRoot = generatedRoot + "/lib/api/"
 	}
@@ -100,6 +116,8 @@ func createApi(generatedRoot string,api API){
 	funcMap["dict"] = dict
 	tmpl.Funcs(funcMap)
 
+	data := make(map[string]interface{})
+
 	tmpl, _ = tmpl.ParseFiles("./templates/api/api_class.tp",
 		"./templates/api/api_create.tp",
 		"./templates/api/api_get_list.tp",
@@ -107,8 +125,11 @@ func createApi(generatedRoot string,api API){
 		"./templates/api/api_delete.tp",
 		"./templates/api/api_get.tp")
 
-	filePath := apiRoot + api.Name + env.API_SUFFIX
-	controller.TemplateFileWriterByName(api, filePath, tmpl, "api")
+	data["api"] = api
+	data["model"] = model
+
+	filePath := apiRoot + model.Name + env.API_SUFFIX
+	controller.TemplateFileWriterByName(data, filePath, tmpl, "api")
 }
 
 func dict(values ...interface{}) (map[string]interface{}, error) {
