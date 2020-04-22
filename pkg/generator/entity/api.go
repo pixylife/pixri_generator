@@ -101,13 +101,13 @@ func GenerateApi(generatedRoot string, model Model) {
 		api.Resource = "/"+strings.ToLower(controller.ToPlural(model.Name))
 		apis = append(apis, api)
 	}
-	createModelApi(generatedRoot, env.ENTITY_API, model, apis)
+	createModelApi(generatedRoot, model, apis)
 
 }
 
-func createModelApi(generatedRoot string, t string, model Model, api []API)  {
+func createModelApi(generatedRoot string, model Model, api []API)  {
 
-	apiRoot := generatedRoot + "/lib/api/"
+	apiRoot := generatedRoot + filepath.FromSlash(env.Root + env.API_PATH)
 	controller.GenerateDir(apiRoot)
 
 	tmpl := template.New("api")
@@ -126,11 +126,12 @@ func createModelApi(generatedRoot string, t string, model Model, api []API)  {
 
 	var imports []string
 
-	imports = append(imports, app.ProjectData.Name+env.MODEL_PATH+model.Name+env.DartExtension)
+	imports = append(imports, app.ProjectData.Name+env.Src+env.MODEL_PATH+model.Name+env.DartExtension)
 
 	data["api"] = api
 	data["model"] = model
 	data["imports"] = imports
+	data["class"] = model.Name+env.API_Class
 
 	filePath := apiRoot + model.Name + env.API_SUFFIX
 	controller.TemplateFileWriterByName(data, filePath, tmpl, "api")

@@ -2,6 +2,7 @@ package entity
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -169,16 +170,17 @@ func GenerateModel(projectDir string, generatedRoot string, projectName string) 
 		model.Modify()
 		modelMap[model.Name] = model
 		createModel(generatedRoot, projectName, model)
-		GenerateApi(generatedRoot,model)
+		GenerateApi(generatedRoot, model)
 		modelList = append(modelList, model)
 	}
 	return modelList
 }
 
-
-
 func createModel(generatedRoot string, projectName string, model Model) {
-	modelRoot := generatedRoot + "/lib/model/"
+	modelRoot := generatedRoot + filepath.FromSlash( env.Root + env.MODEL_PATH)
+
+	fmt.Println(modelRoot)
+
 	controller.GenerateDir(modelRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/controller/model.tp"))
 	filePath := modelRoot + model.Name + ".dart"

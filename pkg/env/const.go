@@ -1,11 +1,14 @@
 package env
 
 ////////////////////////Path/////////////////////////////////
-const MODEL_PATH = "/src/model/"
-const API_PATH = "/src/api/"
+const Root  = Lib+Src
+const Src  = "/src/"
+const Lib  =  "/lib"
+const MODEL_PATH = "model/"
+const API_PATH = "api/"
 
 ////////////////////////Suffix///////////////////
-const API_SUFFIX = "_api_service"+ DartExtension
+const API_SUFFIX = API_Class+ DartExtension
 const MODEL_SUFFIX = ""+ DartExtension
 const FormViewSuffix  = ""+DartExtension
 
@@ -16,6 +19,10 @@ const DartExtension = ".dart"
 const String  = "String"
 const Integer  = "Integer"
 
+/////////////Classes////////////////////////////////
+const API_Class  = "_api_service"
+const UI_Form  = "_from"
+const List_View  = "_listView"
 
 //////////////////////API////////////////////////////
 const ENTITY_API  ="ENTITY_API"
