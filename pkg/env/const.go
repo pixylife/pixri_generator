@@ -11,7 +11,8 @@ const UI_PATH = "ui/"
 ////////////////////////Suffix///////////////////
 const API_SUFFIX = API_Class+ DartExtension
 const MODEL_SUFFIX = ""+ DartExtension
-const FormViewSuffix  = ""+DartExtension
+const FormViewSuffix  = "Form"+DartExtension
+const ListViewSuffix  = "ListView"+DartExtension
 
 ////////////////File Extensions////////////////////
 const DartExtension = ".dart"

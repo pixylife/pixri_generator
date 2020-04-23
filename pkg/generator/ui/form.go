@@ -13,7 +13,7 @@ import (
 
 
 func CreateFormUI(generatedRoot string, projectName string, model entity.Model) entity.Model {
-	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name))
+	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-Basic-Form")
 	funcMap := template.FuncMap{}
