@@ -6,6 +6,7 @@ const Src  = "/src/"
 const Lib  =  "/lib"
 const MODEL_PATH = "model/"
 const API_PATH = "api/"
+const UI_PATH = "ui/"
 
 ////////////////////////Suffix///////////////////
 const API_SUFFIX = API_Class+ DartExtension

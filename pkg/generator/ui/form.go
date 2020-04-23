@@ -1,23 +1,25 @@
 package ui
 
 import (
+	"path/filepath"
+	"pixri_generator/functions"
 	"pixri_generator/pkg/controller"
-	"pixri_generator/pkg/generator/entity"
-	"text/template"
 	"pixri_generator/pkg/env"
+	"pixri_generator/pkg/generator/entity"
+	"strings"
+	"text/template"
 )
 
-var fns = template.FuncMap{
-	"plus1": func(x int) int {
-		return x + 1
-	},
-}
+
 
 func CreateFormUI(generatedRoot string, projectName string, model entity.Model) entity.Model {
-	uiRoot := generatedRoot + "/lib/ui/"
+	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-Basic-Form")
-	tmpl.Funcs(fns)
+	funcMap := template.FuncMap{}
+	funcMap["dict"] = functions.Dict
+	funcMap["plus1"] = functions.Plus1
+	tmpl.Funcs(funcMap)
 
 	tmpl, _ = tmpl.ParseFiles("./templates/ui/form/basic_input_form.tp",
 										"./templates/ui/widget/raised_button_widget.tp",
