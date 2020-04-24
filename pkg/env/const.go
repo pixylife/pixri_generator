@@ -25,6 +25,7 @@ const Integer  = "Integer"
 const API_Class  = "_api_service"
 const UI_Form  = "_From"
 const List_View  = "_ListView"
+const Page  = "_Page"
 
 //////////////////////API////////////////////////////
 const ENTITY_API  ="ENTITY_API"

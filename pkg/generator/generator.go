@@ -16,11 +16,12 @@ func GenerateInit(projectDir string) app.Project {
 	return project
 }
 
-func GenerateControllers(projectDir string,projectName string, generatedRoot string){
-	models := entity.GenerateModel(projectDir,generatedRoot,projectName)
+func GenerateModelFunctions(projectDir string, generatedRoot string){
+	models := entity.GenerateModel(projectDir,generatedRoot)
 	for _,model := range models {
-		crud.CreateFormUI(generatedRoot, projectName, model)
-		crud.CreateListViewUI(generatedRoot, projectName, model)
+		crud.CreateFormUI(generatedRoot, model)
+		crud.CreateListViewUI(generatedRoot, model)
+		crud.CreateCRUDPageUI(generatedRoot, model)
 	}
 }
 

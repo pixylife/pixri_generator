@@ -13,7 +13,7 @@ import (
 
 
 
-func CreateFormUI(generatedRoot string, projectName string, model entity.Model) entity.Model {
+func CreateFormUI(generatedRoot string, model entity.Model) entity.Model {
 	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-Basic-Form")
@@ -26,7 +26,7 @@ func CreateFormUI(generatedRoot string, projectName string, model entity.Model) 
 
 
 
-	tmpl, _ = tmpl.ParseFiles("./templates/ui/form/basic_input_form.tp",
+	tmpl, _ = tmpl.ParseFiles("./templates/ui/page/form/basic_input_form.tp",
 										"./templates/ui/widget/raised_button_widget.tp",
 										"./templates/ui/widget/text_field_widget.tp")
 

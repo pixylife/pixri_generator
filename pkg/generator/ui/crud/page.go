@@ -11,32 +11,28 @@ import (
 	"text/template"
 )
 
-func CreateListViewUI(generatedRoot string, model entity.Model) entity.Model {
+func CreateCRUDPageUI(generatedRoot string, model entity.Model) entity.Model {
 	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-List-View")
 	funcMap := template.FuncMap{}
 	funcMap["dict"] = functions.Dict
-	funcMap["plus1"] = functions.Plus1
 	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
 	funcMap["first_letter_to_lower"] = functions.MakeFirstLowerCase
 	tmpl.Funcs(funcMap)
 
-	tmpl, _ = tmpl.ParseFiles("./templates/ui/view/basic_list_view.tp",
-		"./templates/ui/dialog/yes_no_confirm_dialog.tp",
-		"./templates/ui/widget/text_field_widget.tp")
+	tmpl, _ = tmpl.ParseFiles("./templates/ui/page/form/entity_crud_page.tp")
 
 	var imports []string
 
-	imports = append(imports, app.ProjectData.Name+env.Src+env.MODEL_PATH+model.Name+env.DartExtension)
-	imports = append(imports, app.ProjectData.Name+env.Src+env.API_PATH+model.Name+env.API_SUFFIX)
 	imports = append(imports, app.ProjectData.Name+env.Src+env.UI_PATH+strings.ToLower(model.Name+"/")+model.Name+env.FormViewSuffix)
+	imports = append(imports, app.ProjectData.Name+env.Src+env.UI_PATH+strings.ToLower(model.Name+"/")+model.Name+env.ListViewSuffix)
 
 	data := make(map[string]interface{})
 	data["model"] = model
 	data["imports"] = imports
-	data["class"] = model.Name+env.List_View
-	data["class_api"] = model.Name+env.API_Class
+	data["class"] = model.Name+env.Page
+	data["list_ui"] = model.Name+env.List_View
 	data["form_ui"] = model.Name+env.UI_Form
 
 	filePath := uiRoot + model.Name + env.ListViewSuffix

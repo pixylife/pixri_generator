@@ -1,0 +1,49 @@
+import 'package:flutter/material.dart';
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
+
+GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+
+class {{.class}} extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      theme: ThemeData(
+        primaryColor: Colors.orange,
+        accentColor: Colors.orangeAccent,
+      ),
+      home: Scaffold(
+        key: _scaffoldState,
+        appBar: AppBar(
+          title: Text(
+            "{{.model.Name}}",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          actions: <Widget>[
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  _scaffoldState.currentContext,
+                  MaterialPageRoute(builder: (BuildContext context) {
+                    return {{.form_ui}}();
+                  }),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(right: 16.0),
+                child: Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+        body: {{.list_ui}}(),
+      ),
+    );
+  }
+}

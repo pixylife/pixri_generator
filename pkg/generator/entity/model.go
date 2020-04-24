@@ -150,20 +150,20 @@ func createEntityRelationshipStatements(u *Model) {
 	}
 }
 
-func GenerateModel(projectDir string, generatedRoot string, projectName string) []Model {
+func GenerateModel(projectDir string, generatedRoot string) []Model {
 	var modelList []Model
 	models := readEntityJson(projectDir)
 	for _, model := range models {
 		model.Modify()
 		modelMap[model.Name] = model
-		createModel(generatedRoot, projectName, model)
+		createModel(generatedRoot, model)
 		GenerateApi(generatedRoot, model)
 		modelList = append(modelList, model)
 	}
 	return modelList
 }
 
-func createModel(generatedRoot string, projectName string, model Model) {
+func createModel(generatedRoot string, model Model) {
 	modelRoot := generatedRoot + filepath.FromSlash( env.Root + env.MODEL_PATH)
 
 	controller.GenerateDir(modelRoot)
