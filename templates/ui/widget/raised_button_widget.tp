@@ -3,22 +3,22 @@ RaisedButton(
                     child: Text(
                       widget.profile == null
                           ? "Submit".toUpperCase()
-                          : "Update {{.Name}}".toUpperCase(),
+                          : "Update {{.model.Name}}".toUpperCase(),
                       style: TextStyle(
                         color: Colors.white,
                       ),
                     ),
                     onPressed: () {
                       if (
-                      {{$n := len  .Fields}}
-                      {{- range $i,$v := .Fields}}
+                      {{$n := len  .model.Fields}}
+                      {{- range $i,$v := .model.Fields}}
                             {{- if $i}}
-                                _isField{{$v.FieldName}}Valid == null ||
-                                !_isField{{$v.FieldName}}Valid ||
+                                _isField{{(first_letter_to_upper $v.FieldName)}}Valid == null ||
+                                !_isField{{(first_letter_to_upper $v.FieldName)}}Valid ||
                             {{- end}}
                         {{- if eq (plus1 $i) $n}}
-                            _isField{{$v.FieldName}}Valid == null ||
-                            !_isField{{$v.FieldName}}Valid
+                            _isField{{(first_letter_to_upper $v.FieldName)}}Valid == null ||
+                            !_isField{{(first_letter_to_upper $v.FieldName)}}Valid
                             {{- end}}
                           {{- end}}
                           ) {
@@ -31,23 +31,23 @@ RaisedButton(
                       }
                       setState(() => _isLoading = true);
 
-                      {{- range $v := .Fields}}
+                      {{- range $v := .model.Fields}}
                             {{- if eq $v.FieldType "String"}}
-                                 String {{$v.FieldName}} = _controller{{$v.FieldName}}.text.toString();
+                                 String {{$v.FieldName}} = _controller{{(first_letter_to_upper $v.FieldName)}}.text.toString();
                             {{- end}}
 
                              {{- if eq $v.FieldType "int"}}
-                                   int {{$v.FieldName}} = int.parse(_controller{{$v.FieldName}}.text.toString());
+                                   int {{$v.FieldName}} = int.parse(_controller{{(first_letter_to_upper $v.FieldName)}}.text.toString());
                               {{- end}}
                           {{- end}}
 
-                      {{.Name}} {{.Name}} =
-                          {{.Name}}(
-                      {{- range $v := .Fields}}
+                      {{.model.Name}} {{.model.Name}} =
+                          {{.model.Name}}(
+                      {{- range $v := .model.Fields}}
                                   {{$v.FieldName}}: {{$v.FieldName}}
                       {{- end}});
-                      if (widget.{{.Name}} == null) {
-                        {{.Name}}ApiService.create{{.Name}}({{.Name}}).then((isSuccess) {
+                      if (widget.{{.model.Name}} == null) {
+                        {{.model.Name}}ApiService.create{{.model.Name}}({{.model.Name}}).then((isSuccess) {
                           setState(() => _isLoading = false);
                           if (isSuccess) {
                             Navigator.pop(_scaffoldState.currentState.context);
@@ -60,9 +60,9 @@ RaisedButton(
                       } else {
 
 
-                           {{.Name}}.id = widget.{{.Name}}.id;
+                           {{.model.Name}}.id = widget.{{.model.Name}}.id;
 
-                        {{.Name}}ApiService.update{{.Name}}({{.Name}}).then((isSuccess) {
+                        {{.model.Name}}ApiService.update{{.model.Name}}({{.model.Name}}).then((isSuccess) {
                           setState(() => _isLoading = false);
                           if (isSuccess) {
                             Navigator.pop(_scaffoldState.currentState.context);

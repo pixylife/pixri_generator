@@ -11,8 +11,8 @@ const UI_PATH = "ui/"
 ////////////////////////Suffix///////////////////
 const API_SUFFIX = API_Class+ DartExtension
 const MODEL_SUFFIX = ""+ DartExtension
-const FormViewSuffix  = "Form"+DartExtension
-const ListViewSuffix  = "ListView"+DartExtension
+const FormViewSuffix  = UI_Form+DartExtension
+const ListViewSuffix  = List_View+DartExtension
 
 ////////////////File Extensions////////////////////
 const DartExtension = ".dart"
@@ -23,8 +23,8 @@ const Integer  = "Integer"
 
 /////////////Classes////////////////////////////////
 const API_Class  = "_api_service"
-const UI_Form  = "_from"
-const List_View  = "_listView"
+const UI_Form  = "_From"
+const List_View  = "_ListView"
 
 //////////////////////API////////////////////////////
 const ENTITY_API  ="ENTITY_API"

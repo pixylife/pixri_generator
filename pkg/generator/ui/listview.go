@@ -15,6 +15,7 @@ func CreateListViewUI(generatedRoot string, projectName string, model entity.Mod
 	funcMap := template.FuncMap{}
 	funcMap["dict"] = functions.Dict
 	funcMap["plus1"] = functions.Plus1
+	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
 	tmpl.Funcs(funcMap)
 
 	tmpl, _ = tmpl.ParseFiles("./templates/ui/view/basic_list_view.tp",

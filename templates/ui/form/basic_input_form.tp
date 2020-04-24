@@ -1,35 +1,36 @@
 {{define "UI-Basic-Form"}}
 import 'package:flutter/material.dart';
-import 'package:flutter_app_crud/src/api/profile_api_service.dart';
-import 'package:flutter_app_crud/src/model/Profile.dart';
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
 
 final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
-class {{.Name}}FormView extends StatefulWidget {
-  {{.Name}} {{.Name}};
+class {{.class}} extends StatefulWidget {
+  {{.model.Name}} {{.model.Name}};
 
-  {{.Name}}FormView({this.{{.Name}}});
+  {{.class}} ({this.{{.model.Name}}});
 
   @override
-  _ {{.Name}}FormViewState createState() => _ {{.Name}}FormViewState();
+  _ {{.class}}State createState() => _ {{.class}}State();
 }
 
-class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
+class _ {{.class}}State extends State<{{.class}}> {
   bool _isLoading = false;
-  {{.Name}}ApiService _apiService = {{.Name}}ApiService();
+  {{.class_api}} _apiService = {{.class_api}}();
 
-   {{- range $v := .Fields}}
-            bool _isField{{$v.FieldName}}Valid;
-            TextEditingController _controller{{$v.FieldName}} = TextEditingController();
+   {{- range $v := .model.Fields}}
+            bool _isField{{(first_letter_to_upper $v.FieldName)}}Valid;
+            TextEditingController _controller{{(first_letter_to_upper $v.FieldName)}} = TextEditingController();
    {{- end}}
 
   @override
   void initState() {
-    if (widget.{{.Name}} != null) {
+    if (widget.{{.model.Name}} != null) {
 
-     {{- range $v := .Fields}}
-            _isField{{$v.FieldName}}Valid = true;
-            _controller{{$v.FieldName}}.text = widget.{{$.Name}}.{{$v.FieldName}}.toString();
+     {{- range $v := .model.Fields}}
+            _isField{{(first_letter_to_upper $v.FieldName)}}Valid = true;
+            _controller{{(first_letter_to_upper $v.FieldName)}}.text = widget.{{$.model.Name}}.{{$v.FieldName}}.toString();
      {{- end}}
     }
     super.initState();
@@ -42,7 +43,7 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          widget.{{.Name}} == null ? "Add {{.Name}}" : "Edit {{.Name}}",
+          widget.{{.model.Name}} == null ? "Add {{.model.Name}}" : "Edit {{.model.Name}}",
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -53,7 +54,7 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                 {{- range $v := .Fields}}
+                 {{- range $v := .model.Fields}}
                         _buildTextField{{$v.FieldName}}(),
                  {{- end}}
                 Padding(
@@ -83,7 +84,7 @@ class _ {{.Name}}FormViewState extends State< {{.Name}}FormView> {
       ),
     );
   }
-   {{- range $v := .Fields}}
+   {{- range $v := .model.Fields}}
               {{template "UI-TextField" $v}}
     {{- end}}
 

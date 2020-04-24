@@ -1,6 +1,9 @@
 package functions
 
-import "errors"
+import (
+	"errors"
+	"strings"
+)
 
 
 func Plus1(x int) int {
@@ -20,3 +23,12 @@ func Dict(values ...interface{}) (map[string]interface{}, error) {
 	}
 	return dict, nil
 }
+
+func TOLower(s string) string{
+	return strings.ToLower(s)
+}
+
+func FirstLetterUpper(s string)string{
+	return strings.Title(s)
+}
+

@@ -1,5 +1,5 @@
 {{define "UI-TextField"}}
-Widget _buildTextField{{.FieldName}}() {
+Widget _buildTextField{{(first_letter_to_upper $.FieldName)}}() {
     return TextField(
       controller: _controller{{.FieldName}},
       keyboardType: TextInputType.text,
