@@ -1,4 +1,5 @@
 {{define "UI-Basic-Form"}}
+{{- $ModelNameFLL := (first_letter_to_lower .model.Name)}}
 import 'package:flutter/material.dart';
 {{- range $v := .imports}}
 import 'package:{{$v}}';
@@ -7,17 +8,17 @@ import 'package:{{$v}}';
 final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
 
 class {{.class}} extends StatefulWidget {
-  {{.model.Name}} {{.model.Name}};
+  {{.model.Name}} {{$ModelNameFLL}};
 
-  {{.class}} ({this.{{.model.Name}}});
+  {{.class}} ({this.{{$ModelNameFLL}}});
 
   @override
-  _ {{.class}}State createState() => _ {{.class}}State();
+  _{{.class}}State createState() => _{{.class}}State();
 }
 
 class _{{.class}}State extends State<{{.class}}> {
   bool _isLoading = false;
-  {{.class_api}}_apiService = {{.class_api}}();
+  {{.class_api}} _apiService = {{.class_api}}();
 
    {{- range $v := .model.Fields}}
             bool _isField{{(first_letter_to_upper $v.FieldName)}}Valid;
@@ -26,11 +27,11 @@ class _{{.class}}State extends State<{{.class}}> {
 
   @override
   void initState() {
-    if (widget.{{.model.Name}} != null) {
+    if (widget.{{$ModelNameFLL}} != null) {
 
      {{- range $v := .model.Fields}}
             _isField{{(first_letter_to_upper $v.FieldName)}}Valid = true;
-            _controller{{(first_letter_to_upper $v.FieldName)}}.text = widget.{{$.model.Name}}.{{$v.FieldName}}.toString();
+            _controller{{(first_letter_to_upper $v.FieldName)}}.text = widget.{{(first_letter_to_lower $.model.Name)}}.{{$v.FieldName}}.toString();
      {{- end}}
     }
     super.initState();
@@ -43,7 +44,7 @@ class _{{.class}}State extends State<{{.class}}> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
-          widget.{{.model.Name}} == null ? "Add {{.model.Name}}" : "Edit {{.model.Name}}",
+          widget.{{$ModelNameFLL}} == null ? "Add {{.model.Name}}" : "Edit {{.model.Name}}",
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -55,7 +56,7 @@ class _{{.class}}State extends State<{{.class}}> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                  {{- range $v := .model.Fields}}
-                        _buildTextField{{$v.FieldName}}(),
+                        _buildTextField{{(first_letter_to_upper $v.FieldName)}}(),
                  {{- end}}
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -87,5 +88,5 @@ class _{{.class}}State extends State<{{.class}}> {
    {{- range $v := .model.Fields}}
               {{template "UI-TextField" $v}}
     {{- end}}
-
+}
  {{end}}

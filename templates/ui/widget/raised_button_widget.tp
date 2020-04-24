@@ -1,7 +1,7 @@
 {{define "UI-RaisedButton"}}
 RaisedButton(
                     child: Text(
-                      widget.profile == null
+                      widget.{{(first_letter_to_lower .model.Name)}} == null
                           ? "Submit".toUpperCase()
                           : "Update {{.model.Name}}".toUpperCase(),
                       style: TextStyle(
@@ -41,13 +41,13 @@ RaisedButton(
                               {{- end}}
                           {{- end}}
 
-                      {{.model.Name}} {{.model.Name}} =
+                      {{.model.Name}} {{(first_letter_to_lower .model.Name)}} =
                           {{.model.Name}}(
                       {{- range $v := .model.Fields}}
-                                  {{$v.FieldName}}: {{$v.FieldName}}
+                                  {{$v.FieldName}}: {{$v.FieldName}},
                       {{- end}});
-                      if (widget.{{.model.Name}} == null) {
-                        {{.model.Name}}ApiService.create{{.model.Name}}({{.model.Name}}).then((isSuccess) {
+                      if (widget.{{(first_letter_to_lower .model.Name)}} == null) {
+                        _apiService.create{{.model.Name}}({{(first_letter_to_lower .model.Name)}}).then((isSuccess) {
                           setState(() => _isLoading = false);
                           if (isSuccess) {
                             Navigator.pop(_scaffoldState.currentState.context);
@@ -59,10 +59,9 @@ RaisedButton(
                         });
                       } else {
 
+                        {{(first_letter_to_lower .model.Name)}}.id = widget.{{(first_letter_to_lower .model.Name)}}.id;
 
-                           {{.model.Name}}.id = widget.{{.model.Name}}.id;
-
-                        {{.model.Name}}ApiService.update{{.model.Name}}({{.model.Name}}).then((isSuccess) {
+                       _apiService.update{{.model.Name}}({{(first_letter_to_lower .model.Name)}}).then((isSuccess) {
                           setState(() => _isLoading = false);
                           if (isSuccess) {
                             Navigator.pop(_scaffoldState.currentState.context);

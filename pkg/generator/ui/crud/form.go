@@ -21,6 +21,7 @@ func CreateFormUI(generatedRoot string, projectName string, model entity.Model) 
 	funcMap["dict"] = functions.Dict
 	funcMap["plus1"] = functions.Plus1
 	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
+	funcMap["first_letter_to_lower"] = functions.MakeFirstLowerCase
 	tmpl.Funcs(funcMap)
 
 

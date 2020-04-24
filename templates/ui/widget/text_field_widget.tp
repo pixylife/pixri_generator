@@ -1,19 +1,20 @@
 {{define "UI-TextField"}}
 Widget _buildTextField{{(first_letter_to_upper $.FieldName)}}() {
     return TextField(
-      controller: _controller{{.FieldName}},
+      controller: _controller{{(first_letter_to_upper $.FieldName)}},
       keyboardType: TextInputType.text,
       decoration: InputDecoration(
         labelText: "{{.FieldUIName}}",
-        errorText: _isField{{.FieldName}}Valid == null || _isField{{.FieldName}}Valid
+        errorText: _isField{{(first_letter_to_upper $.FieldName)}}Valid == null || _isField{{(first_letter_to_upper $.FieldName)}}Valid
             ? null
             : "{{.FieldUIName}} is required",
       ),
       onChanged: (value) {
         bool isFieldValid = value.trim().isNotEmpty;
-        if (isFieldValid != _isField{{.FieldName}}Valid) {
-          setState(() => _isField{{.FieldName}}Valid = isFieldValid);
+        if (isFieldValid != _isField{{(first_letter_to_upper $.FieldName)}}Valid) {
+          setState(() => _isField{{(first_letter_to_upper $.FieldName)}}Valid = isFieldValid);
         }
       },
     );
+    }
 {{end}}

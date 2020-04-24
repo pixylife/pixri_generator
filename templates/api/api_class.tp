@@ -13,22 +13,13 @@ class {{.class}} {
 
         {{- if eq $v.Type "Create"}}
                 {{template "API-Create" dict "Model" $.model "API" $v}}
-        {{- end}}
-
-        {{- if eq $v.Type "Delete"}}
+        {{- else if eq $v.Type "Delete"}}
                  {{template "API-Delete" dict "Model" $.model "API" $v}}
-        {{- end}}
-
-        {{- if eq $v.Type "Update"}}
+        {{- else if eq $v.Type "Update"}}
                   {{template "API-Update" dict "Model" $.model "API" $v}}
-        {{- end}}
-
-        {{- if eq $v.Type "Find"}}
+        {{- else if eq $v.Type "Find"}}
                   {{template "API-Find" dict "Model" $.model "API" $v}}
-         {{- end}}
-
-
-        {{- if eq $v.Type "GetList"}}
+        {{- else if eq $v.Type "GetList"}}
                   {{template "API-GetList" dict "Model" $.model "API" $v}}
         {{- end}}
 

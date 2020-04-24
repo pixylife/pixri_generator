@@ -19,6 +19,7 @@ func CreateListViewUI(generatedRoot string, projectName string, model entity.Mod
 	funcMap["dict"] = functions.Dict
 	funcMap["plus1"] = functions.Plus1
 	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
+	funcMap["first_letter_to_lower"] = functions.MakeFirstLowerCase
 	tmpl.Funcs(funcMap)
 
 	tmpl, _ = tmpl.ParseFiles("./templates/ui/view/basic_list_view.tp",
@@ -29,11 +30,14 @@ func CreateListViewUI(generatedRoot string, projectName string, model entity.Mod
 
 	imports = append(imports, app.ProjectData.Name+env.Src+env.MODEL_PATH+model.Name+env.DartExtension)
 	imports = append(imports, app.ProjectData.Name+env.Src+env.API_PATH+model.Name+env.API_SUFFIX)
+	imports = append(imports, app.ProjectData.Name+env.Src+env.UI_PATH+strings.ToLower(model.Name+"/")+model.Name+env.FormViewSuffix)
+
 	data := make(map[string]interface{})
 	data["model"] = model
 	data["imports"] = imports
 	data["class"] = model.Name+env.List_View
 	data["class_api"] = model.Name+env.API_Class
+	data["form_ui"] = model.Name+env.UI_Form
 
 	filePath := uiRoot + model.Name + env.ListViewSuffix
 	controller.TemplateFileWriterByName(data, filePath, tmpl, "UI-List-View")
