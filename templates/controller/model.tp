@@ -1,23 +1,26 @@
 import 'dart:convert';
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
 
-class {{.Name}} {
+class {{.model.Name}} {
   int id;
-  {{- range $v := .Fields}}
+  {{- range $v := .model.Fields}}
   {{$v.FieldType}} {{$v.FieldName}};
   {{- end}}
 
 
-  {{.Name}}({
+  {{.model.Name}}({
                this.id,
-  {{- range $v := .Fields}}
+  {{- range $v := .model.Fields}}
               this.{{$v.FieldName}},
                {{- end}}
                });
 
-  factory {{.Name}}.fromJson(Map<String, dynamic> map) {
-    return {{.Name}}(
+  factory {{.model.Name}}.fromJson(Map<String, dynamic> map) {
+    return {{.model.Name}}(
           id: map["id"],
-    {{- range $v := .Fields}}
+    {{- range $v := .model.Fields}}
       {{$v.FieldName}}: map["{{$v.FieldName}}"],
       {{- end}}
       );
@@ -26,7 +29,7 @@ class {{.Name}} {
   Map<String, dynamic> toJson() {
   return {
           "id": id,
-  {{- range $v := .Fields}}
+  {{- range $v := .model.Fields}}
         "{{$v.FieldName}}": {{$v.FieldName}},
    {{- end}}
  };
@@ -34,9 +37,9 @@ class {{.Name}} {
 
   @override
   String toString() {
-    return '{{.Name}}{'
+    return '{{.model.Name}}{'
               'id: $id,'
-     {{- range $v := .Fields}}
+     {{- range $v := .model.Fields}}
           '{{$v.FieldName}}: ${{$v.FieldName}},'
        {{- end}}
    '}';
@@ -44,12 +47,17 @@ class {{.Name}} {
 
 }
 
-List<{{.Name}}> {{.Name}}FromJson(String jsonData) {
+List<{{.model.Name}}> {{.model.Name}}ListFromJson(String jsonData) {
   final data = json.decode(jsonData);
-  return List<{{.Name}}>.from(data.map((item) => {{.Name}}.fromJson(item)));
+  return List<{{.model.Name}}>.from(data.map((item) => {{.model.Name}}.fromJson(item)));
 }
 
-String {{.Name}}ToJson({{.Name}} data) {
+{{.model.Name}} {{.model.Name}}FromJson(String jsonData) {
+  final data = json.decode(jsonData);
+  return data.map((item) => {{.model.Name}}.fromJson(item));
+}
+
+String {{.model.Name}}ToJson({{.model.Name}} data) {
   final jsonData = data.toJson();
   return json.encode(jsonData);
 }

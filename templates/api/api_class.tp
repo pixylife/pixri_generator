@@ -5,9 +5,9 @@ import 'package:{{$v}}';
 import 'package:http/http.dart' show Client;
 
 class {{.class}} {
-  final String baseUrl = ;
+  final String baseUrl = "";
   Client client = Client();
-}
+
 
   {{- range $v := .api}}
 
@@ -34,4 +34,5 @@ class {{.class}} {
 
 
   {{- end}}
+}
 {{end}}

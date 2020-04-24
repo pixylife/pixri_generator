@@ -2,30 +2,17 @@ package entity
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"pixri_generator/functions"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/env"
+	"pixri_generator/pkg/generator/app"
 	"strings"
 	"text/template"
 )
-
-/*type Model struct {
-	Name          string `json:"name"`
-	Fields    []struct {
-		Name  string `json:"name"`
-		Type string `json:"type"`
-		Key bool `json:"key"`
-		AutoGen bool `json:"auto_gen"`
-	} `json:"fields"`
-	API []API `json:"apis"`
-	PackageName string
-	Path string
-	BaseURL string `json:"base_url"`
-}*/
 
 var modelMap = make(map[string]Model)
 
@@ -126,7 +113,7 @@ func createEntityRelationshipStatements(u *Model) {
 		if relationship == "one-to-one" {
 			pixriLogger.Log.Debug(" 🔸 Generating : Entity Relationship : one-to-one ")
 			newField := Field{}
-			newField.FieldName = otherEntity
+			newField.FieldName = functions.MakeFirstLowerCase(otherEntity)
 			newField.FieldType = strings.Title(otherEntity)
 			newField.FieldUIName = field.OtherEntityField
 
@@ -135,7 +122,7 @@ func createEntityRelationshipStatements(u *Model) {
 		} else if relationship == "one-to-many" {
 			pixriLogger.Log.Debug(" 🔸 Generating : Entity Relationship : one-to-many ")
 			newField := Field{}
-			newField.FieldName = otherEntity
+			newField.FieldName = functions.MakeFirstLowerCase(otherEntity)
 			newField.FieldType = "List<" + otherEntity + ">"
 			newField.FieldValues = field.OtherEntityField
 			newField.FieldUIName = field.OtherEntityField
@@ -144,7 +131,7 @@ func createEntityRelationshipStatements(u *Model) {
 		} else if relationship == "many-to-one" {
 			pixriLogger.Log.Debug(" 🔸 Generating : Entity Relationship : many-to-one ")
 			newField := Field{}
-			newField.FieldName = otherEntity
+			newField.FieldName = functions.MakeFirstLowerCase(otherEntity)
 			newField.FieldType = strings.Title(otherEntity)
 			newField.FieldValues = field.OtherEntityField
 			newField.FieldUIName = field.OtherEntityField
@@ -153,7 +140,7 @@ func createEntityRelationshipStatements(u *Model) {
 		} else if relationship == "many-to-many" {
 			pixriLogger.Log.Debug(" 🔸 Generating : Entity Relationship : many-to-many ")
 			newField := Field{}
-			newField.FieldName = otherEntity
+			newField.FieldName = functions.MakeFirstLowerCase(otherEntity)
 			newField.FieldType = "List<" + otherEntity + ">"
 			newField.FieldValues = field.OtherEntityField
 			newField.FieldUIName = field.OtherEntityField
@@ -179,10 +166,22 @@ func GenerateModel(projectDir string, generatedRoot string, projectName string) 
 func createModel(generatedRoot string, projectName string, model Model) {
 	modelRoot := generatedRoot + filepath.FromSlash( env.Root + env.MODEL_PATH)
 
-	fmt.Println(modelRoot)
-
 	controller.GenerateDir(modelRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/controller/model.tp"))
+
+	var imports []string
+
+	if model.Relationships != nil{
+		for _, relationship := range model.Relationships{
+			imports = append(imports, app.ProjectData.Name+env.Src+env.MODEL_PATH+strings.Title(relationship.OtherEntityName)+env.DartExtension)
+		}
+	}
+
+	data := make(map[string]interface{})
+
+	data["model"] = model
+	data["imports"] = imports
+
 	filePath := modelRoot + model.Name + ".dart"
-	controller.TemplateFileWriter(model, filePath, tmpl)
+	controller.TemplateFileWriter(data, filePath, tmpl)
 }
