@@ -1,4 +1,7 @@
 {{define "UI-List-View"}}
+
+{{- $ModelNameFLL := (first_letter_to_lower .model.Name)}}
+
 import 'package:flutter/material.dart';
 {{- range $v := .imports}}
 import 'package:{{$v}}';
@@ -32,8 +35,8 @@ class _{{.class}}State extends State<{{.class}}> {
                   "Something wrong with message: ${snapshot.error.toString()}"),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            List<{{.model.Name}}> {{(first_letter_to_lower .model.Name)}}List = snapshot.data;
-            return _buildListView({{(first_letter_to_lower .model.Name)}}List);
+            List<{{.model.Name}}> {{$ModelNameFLL}}List = snapshot.data;
+            return _buildListView({{$ModelNameFLL}}List);
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -44,12 +47,12 @@ class _{{.class}}State extends State<{{.class}}> {
     );
   }
 
-  Widget _buildListView(List<{{.model.Name}}> {{(first_letter_to_lower .model.Name)}}List) {
+  Widget _buildListView(List<{{.model.Name}}> {{$ModelNameFLL}}List) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          {{.model.Name}} {{(first_letter_to_lower .model.Name)}} = {{(first_letter_to_lower .model.Name)}}List[index];
+          {{.model.Name}} {{$ModelNameFLL}} = {{$ModelNameFLL}}List[index];
           return Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Card(
@@ -59,7 +62,7 @@ class _{{.class}}State extends State<{{.class}}> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     {{- range $v := .model.Fields}}
-                         Text({{(first_letter_to_lower $.model.Name)}}.{{$v.FieldName}}.toString()),
+                         Text({{$ModelNameFLL}}.{{$v.FieldName}}.toString()),
                     {{- end}}
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -79,7 +82,7 @@ class _{{.class}}State extends State<{{.class}}> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                           apiService
-                                              .delete{{.model.Name}}({{(first_letter_to_lower .model.Name)}}.id)
+                                              .delete{{.model.Name}}({{$ModelNameFLL}}.id)
                                               .then((isSuccess) {
                                             if (isSuccess) {
                                               setState(() {});
@@ -115,7 +118,7 @@ class _{{.class}}State extends State<{{.class}}> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return {{.form_ui}}({{(first_letter_to_lower .model.Name)}}: {{(first_letter_to_lower .model.Name)}});
+                              return {{.form_ui}}({{$ModelNameFLL}}: {{$ModelNameFLL}});
                             }));
                           },
                           child: Text(
@@ -131,7 +134,7 @@ class _{{.class}}State extends State<{{.class}}> {
             ),
           );
         },
-        itemCount: {{(first_letter_to_lower .model.Name)}}List.length,
+        itemCount: {{$ModelNameFLL}}List.length,
       ),
     );
   }

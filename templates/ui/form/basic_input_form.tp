@@ -31,7 +31,7 @@ class _{{.class}}State extends State<{{.class}}> {
 
      {{- range $v := .model.Fields}}
             _isField{{(first_letter_to_upper $v.FieldName)}}Valid = true;
-            _controller{{(first_letter_to_upper $v.FieldName)}}.text = widget.{{(first_letter_to_lower $.model.Name)}}.{{$v.FieldName}}.toString();
+            _controller{{(first_letter_to_upper $v.FieldName)}}.text = widget.{{$ModelNameFLL}}.{{$v.FieldName}}.toString();
      {{- end}}
     }
     super.initState();
