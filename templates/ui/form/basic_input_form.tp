@@ -15,9 +15,9 @@ class {{.class}} extends StatefulWidget {
   _ {{.class}}State createState() => _ {{.class}}State();
 }
 
-class _ {{.class}}State extends State<{{.class}}> {
+class _{{.class}}State extends State<{{.class}}> {
   bool _isLoading = false;
-  {{.class_api}} _apiService = {{.class_api}}();
+  {{.class_api}}_apiService = {{.class_api}}();
 
    {{- range $v := .model.Fields}}
             bool _isField{{(first_letter_to_upper $v.FieldName)}}Valid;

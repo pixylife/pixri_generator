@@ -1,22 +1,22 @@
 {{define "UI-List-View"}}
 import 'package:flutter/material.dart';
-import 'package:flutter_app_crud/src/api/profile_api_service.dart';
-import 'package:flutter_app_crud/src/model/Profile.dart';
-import 'package:flutter_app_crud/src/ui/formadd/form_add_screen.dart';
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
 
-class HomeScreen extends StatefulWidget {
+class {{.class}} extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _{{.class}}State createState() => _{{.class}}State();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _{{.class}}State extends State<{{.class}}> {
   BuildContext context;
-  ProfileApiService apiService;
+  {{.class_api}} apiService;
 
   @override
   void initState() {
     super.initState();
-    apiService = ProfileApiService();
+    apiService = {{.class_api}}();
   }
 
   @override
@@ -25,15 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: FutureBuilder(
         future: apiService.getProfiles(),
-        builder: (BuildContext context, AsyncSnapshot<List<Profile>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<{{.model.Name}}>> snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Text(
                   "Something wrong with message: ${snapshot.error.toString()}"),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
-            List<Profile> profiles = snapshot.data;
-            return _buildListView(profiles);
+            List<{{.model.Name}}> {{.model.Name}}List = snapshot.data;
+            return _buildListView({{.model.Name}}List);
           } else {
             return Center(
               child: CircularProgressIndicator(),
@@ -44,12 +44,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildListView(List<Profile> profiles) {
+  Widget _buildListView(List<{{.model.Name}}> {{.model.Name}}List) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          Profile profile = profiles[index];
+          {{.model.Name}} {{.model.Name}} = {{.model.Name}}List[index];
           return Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Card(
@@ -58,12 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      profile.name,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    Text(profile.email),
-                    Text(profile.age.toString()),
+                    {{- range $v := .model.Fields}}
+                         Text({{$.model.Name}}.{{$v.FieldName}}.toString()),
+                    {{- end}}
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
@@ -75,14 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return AlertDialog(
                                     title: Text("Warning"),
                                     content: Text(
-                                        "Are you sure want to delete data profile ${profile.name}?"),
+                                        "Are you sure want to delete this"),
                                     actions: <Widget>[
                                       FlatButton(
                                         child: Text("Yes"),
                                         onPressed: () {
                                           Navigator.pop(context);
                                           apiService
-                                              .deleteProfile(profile.id)
+                                              .delete{{.model.Name}}({{.model.Name}}.id)
                                               .then((isSuccess) {
                                             if (isSuccess) {
                                               setState(() {});
@@ -118,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           onPressed: () {
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (context) {
-                              return FormAddScreen(profile: profile);
+                              return FormAddScreen({{.model.Name}}: {{.model.Name}});
                             }));
                           },
                           child: Text(

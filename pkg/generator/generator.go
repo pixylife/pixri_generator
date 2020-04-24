@@ -4,7 +4,7 @@ import (
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/generator/app"
 	"pixri_generator/pkg/generator/entity"
-	"pixri_generator/pkg/generator/ui"
+	"pixri_generator/pkg/generator/ui/crud"
 )
 
 var project app.Project
@@ -19,8 +19,8 @@ func GenerateInit(projectDir string) app.Project {
 func GenerateControllers(projectDir string,projectName string, generatedRoot string){
 	models := entity.GenerateModel(projectDir,generatedRoot,projectName)
 	for _,model := range models {
-		ui.CreateFormUI(generatedRoot, projectName, model)
-		ui.CreateListViewUI(generatedRoot, projectName, model)
+		crud.CreateFormUI(generatedRoot, projectName, model)
+		crud.CreateListViewUI(generatedRoot, projectName, model)
 	}
 }
 
