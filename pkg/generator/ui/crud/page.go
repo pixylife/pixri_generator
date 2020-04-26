@@ -11,17 +11,17 @@ import (
 	"text/template"
 )
 
-func CreateCRUDPageUI(generatedRoot string, model entity.Model) entity.Model {
+func CreateCRUDPageUI(generatedRoot string, model entity.Model) {
 	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
-	tmpl := template.New("UI-List-View")
+	tmpl := template.New("model-page")
 	funcMap := template.FuncMap{}
 	funcMap["dict"] = functions.Dict
 	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
 	funcMap["first_letter_to_lower"] = functions.MakeFirstLowerCase
 	tmpl.Funcs(funcMap)
 
-	tmpl, _ = tmpl.ParseFiles("./templates/ui/page/form/entity_crud_page.tp")
+	tmpl, _ = tmpl.ParseFiles("./templates/ui/page/entity_crud_page.tp")
 
 	var imports []string
 
@@ -35,7 +35,6 @@ func CreateCRUDPageUI(generatedRoot string, model entity.Model) entity.Model {
 	data["list_ui"] = model.Name+env.List_View
 	data["form_ui"] = model.Name+env.UI_Form
 
-	filePath := uiRoot + model.Name + env.ListViewSuffix
-	controller.TemplateFileWriterByName(data, filePath, tmpl, "UI-List-View")
-	return model
+	filePath := uiRoot + model.Name + env.PageSuffix
+	controller.TemplateFileWriterByName(data, filePath, tmpl, "model-page")
 }

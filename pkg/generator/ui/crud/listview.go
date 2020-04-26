@@ -11,7 +11,7 @@ import (
 	"text/template"
 )
 
-func CreateListViewUI(generatedRoot string, model entity.Model) entity.Model {
+func CreateListViewUI(generatedRoot string, model entity.Model){
 	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-List-View")
@@ -41,5 +41,4 @@ func CreateListViewUI(generatedRoot string, model entity.Model) entity.Model {
 
 	filePath := uiRoot + model.Name + env.ListViewSuffix
 	controller.TemplateFileWriterByName(data, filePath, tmpl, "UI-List-View")
-	return model
 }

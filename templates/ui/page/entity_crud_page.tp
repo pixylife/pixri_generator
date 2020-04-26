@@ -1,3 +1,4 @@
+{{define "model-page"}}
 import 'package:flutter/material.dart';
 {{- range $v := .imports}}
 import 'package:{{$v}}';
@@ -47,3 +48,4 @@ class {{.class}} extends StatelessWidget {
     );
   }
 }
+{{end}}

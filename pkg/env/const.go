@@ -13,6 +13,7 @@ const API_SUFFIX = API_Class+ DartExtension
 const MODEL_SUFFIX = ""+ DartExtension
 const FormViewSuffix  = UI_Form+DartExtension
 const ListViewSuffix  = List_View+DartExtension
+const PageSuffix  = Page+DartExtension
 
 ////////////////File Extensions////////////////////
 const DartExtension = ".dart"

@@ -48,7 +48,9 @@ class _{{.class}}State extends State<{{.class}}> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Stack(
+      body: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -81,7 +83,8 @@ class _{{.class}}State extends State<{{.class}}> {
                   ],
                 )
               : Container(),
-        ],
+          ],
+        ),
       ),
     );
   }

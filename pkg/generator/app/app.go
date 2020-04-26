@@ -12,6 +12,17 @@ func CreateAppClass(project Project)  {
 	fileRoot := project.Root+ filepath.FromSlash(env.Root)
 	controller.GenerateDir(fileRoot)
 	tmpl := template.Must(template.ParseFiles("./templates/app/app.tp"))
+
+
+	var imports []string
+
+	imports = append(imports,  project.Name+env.Src+env.UI_PATH+"manager/Manager"+env.PageSuffix)
+
+	data := make(map[string]interface{})
+	data["imports"] = imports
+	data["title"] = "Test"
+	data["body"] = "Manager"+env.Page
+
 	filePath :=fileRoot+"app.dart"
-	controller.TemplateFileWriter(project, filePath, tmpl)
+	controller.TemplateFileWriter(data, filePath, tmpl)
 }

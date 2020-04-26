@@ -25,7 +25,7 @@ func GenerateModelFunctions(projectDir string, generatedRoot string){
 	}
 }
 
-func ModifyProjectFiles(projectDir string,project app.Project){
+func ModifyProjectFiles(project app.Project){
 	app.UpdatePubspec(project)
 	app.CreateAppClass(project)
 	app.CreateMain(project.Root,project.Name)

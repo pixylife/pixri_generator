@@ -6,5 +6,5 @@ func main()  {
 	var projectDir = "sample";
 	project := generator.GenerateInit(projectDir)
 	generator.GenerateModelFunctions(projectDir,project.Root)
-	generator.ModifyProjectFiles(projectDir,project)
+	generator.ModifyProjectFiles(project)
 }
