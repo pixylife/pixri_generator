@@ -2,10 +2,10 @@ package entity
 
 import (
 	"encoding/json"
-	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"pixri_generator/functions"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/env"
@@ -112,7 +112,7 @@ func createModelApi(generatedRoot string, model Model, api []API)  {
 
 	tmpl := template.New("api")
 	funcMap := template.FuncMap{}
-	funcMap["dict"] = dict
+	funcMap["dict"] = functions.Dict
 	tmpl.Funcs(funcMap)
 
 	data := make(map[string]interface{})
@@ -137,17 +137,4 @@ func createModelApi(generatedRoot string, model Model, api []API)  {
 	controller.TemplateFileWriterByName(data, filePath, tmpl, "api")
 }
 
-func dict(values ...interface{}) (map[string]interface{}, error) {
-	if len(values)%2 != 0 {
-		return nil, errors.New("invalid dict call")
-	}
-	dict := make(map[string]interface{}, len(values)/2)
-	for i := 0; i < len(values); i += 2 {
-		key, ok := values[i].(string)
-		if !ok {
-			return nil, errors.New("dict keys must be strings")
-		}
-		dict[key] = values[i+1]
-	}
-	return dict, nil
-}
+

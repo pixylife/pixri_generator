@@ -54,7 +54,7 @@ func projectInit(projectName string, projectDir string){
 
 func createProject(projectName string, generatedRoot string) {
 	now := time.Now()
-	cmd := exec.Command("flutter", "create", "--org", "io.prixi."+projectName+""+string(now.Unix()), "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
+	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName+""+string(now.Unix()), "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
 	cmd.Dir = generatedRoot
 	out, err := cmd.Output()
 	pixriLogger.Log.Info("Project init",string(out))

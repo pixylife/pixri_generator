@@ -27,3 +27,4 @@ class {{.class}} {
   {{- end}}
 }
 {{end}}
+

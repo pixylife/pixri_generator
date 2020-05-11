@@ -12,11 +12,13 @@ import (
 )
 
 
-
+//Create UI function
 func CreateFormUI(generatedRoot string, model entity.Model) entity.Model {
+	//def file path
 	uiRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH+strings.ToLower(model.Name+"/"))
 	controller.GenerateDir(uiRoot)
 	tmpl := template.New("UI-Basic-Form")
+	//adding template functions
 	funcMap := template.FuncMap{}
 	funcMap["dict"] = functions.Dict
 	funcMap["plus1"] = functions.Plus1
@@ -25,11 +27,12 @@ func CreateFormUI(generatedRoot string, model entity.Model) entity.Model {
 	tmpl.Funcs(funcMap)
 
 
-
+	//parse template files
 	tmpl, _ = tmpl.ParseFiles("./templates/ui/page/form/basic_input_form.tp",
 										"./templates/ui/widget/raised_button_widget.tp",
 										"./templates/ui/widget/text_field_widget.tp")
 
+	//init data dict
 	data := make(map[string]interface{})
 	var imports []string
 
@@ -41,7 +44,7 @@ func CreateFormUI(generatedRoot string, model entity.Model) entity.Model {
 	data["class"] = model.Name+env.UI_Form
 	data["class_api"] = model.Name+env.API_Class
 
-
+    //write template into dart file
 	filePath := uiRoot + model.Name + env.FormViewSuffix
 	controller.TemplateFileWriterByName(data, filePath, tmpl, "UI-Basic-Form")
 	return model
