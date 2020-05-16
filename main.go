@@ -13,8 +13,6 @@ func main()  {
 	generator.ModifyProjectFiles(project)*/
 
 
-
-
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

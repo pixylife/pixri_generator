@@ -7,7 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"pixri_generator/pixriLogger"
-	"time"
+	"pixri_generator/pkg/model"
 )
 
 type Project struct {
@@ -23,6 +23,7 @@ type Project struct {
 }
 
 var ProjectData = Project{}
+var Application = model.Application{}
 
 func GetProject(projectDir string) Project {
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
@@ -33,15 +34,15 @@ func GetProject(projectDir string) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-	rootLocation := projectDir + "/generated/" + ProjectData.Name
+	rootLocation := projectDir + "/generated/" + Application.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
-			projectInit(ProjectData.Name,projectDir)
+			projectInit(Application.Name,projectDir)
 		}else{
 			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
 	ProjectData.Root = filepath.FromSlash(rootLocation)
-	projectInit(ProjectData.Name, projectDir)
+	projectInit(Application.Name, projectDir)
 	pixriLogger.Log.Info("Project root for generated codes :", ProjectData.Root)
 	return ProjectData
 }
@@ -53,8 +54,8 @@ func projectInit(projectName string, projectDir string){
 	}
 
 func createProject(projectName string, generatedRoot string) {
-	now := time.Now()
-	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName+""+string(now.Unix()), "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
+	//now := time.Now()
+	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName+"", "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
 	cmd.Dir = generatedRoot
 	out, err := cmd.Output()
 	pixriLogger.Log.Info("Project init",string(out))
