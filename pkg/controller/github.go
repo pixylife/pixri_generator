@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var owner = "pixylife"
+
 func CreateRepository(appName string) (*github.Repository, *github.Response, error)  {
 	ctx := context.Background()
 	now := time.Now()
@@ -69,3 +71,24 @@ func exeClone(url string, localDir string) error {
 }
 
 
+/*
+func PushCommit(ref *github.Reference, tree *github.Tree,repoName string) (err error) {
+	ctx := context.Background()
+	parent, _, err := getClient().Repositories.GetCommit(ctx,owner, repoName, *ref.Object.SHA)
+	if err != nil {
+		return err
+	}
+	parent.Commit.SHA = parent.SHA
+
+	date := time.Now()
+	author := &github.CommitAuthor{Date: &date, Name: authorName, Email: authorEmail}
+	commit := &github.Commit{Author: author, Message: , Tree: tree, Parents: []github.Commit{*parent.Commit}}
+	newCommit, _, err := getClient().Git.CreateCommit(ctx, owner, repoName, commit)
+	if err != nil {
+		return err
+	}
+	ref.Object.SHA = newCommit.SHA
+	_, _, err = getClient().Git.UpdateRef(ctx, owner, repoName, ref, false)
+
+	return err
+}*/
