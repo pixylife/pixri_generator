@@ -1,19 +1,21 @@
 package main
 
 import (
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"pixri_generator/pkg/controller"
+	"pixri_generator/pkg/generator"
 )
 
 func main()  {
-	/*var projectDir = "sample";
+	var projectDir = "sample";
 	project := generator.GenerateInit(projectDir)
-	generator.GenerateModelFunctions(projectDir,project.Root)
-	generator.ModifyProjectFiles(project)*/
+	_ = controller.GitInit(project.Root)
+	_ = controller.SetRemote("https://github.com/pixylife/Test-1589634460-Pixri", project.Root)
+
+	//generator.GenerateModelFunctions(projectDir,project.Root)
+	//generator.ModifyProjectFiles(project)
 
 
-	e := echo.New()
+/*	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
@@ -21,6 +23,6 @@ func main()  {
 	r := e.Group("/")
 	controller.GenerateController(r, "api")
 
-	e.Logger.Fatal(e.Start(":5003"))
+	e.Logger.Fatal(e.Start(":5003"))*/
 }
 

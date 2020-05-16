@@ -1,13 +1,15 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"pixri_generator/pixriLogger"
-	"pixri_generator/pkg/model"
+	"sync"
 )
 
 type Project struct {
@@ -23,7 +25,7 @@ type Project struct {
 }
 
 var ProjectData = Project{}
-var Application = model.Application{}
+//var Application = model.Application{}
 
 func GetProject(projectDir string) Project {
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
@@ -34,15 +36,15 @@ func GetProject(projectDir string) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-	rootLocation := projectDir + "/generated/" + Application.Name
+	rootLocation := projectDir + "/generated/" + ProjectData.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
-			projectInit(Application.Name,projectDir)
+			projectInit(ProjectData.Name,projectDir)
 		}else{
 			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
 	ProjectData.Root = filepath.FromSlash(rootLocation)
-	projectInit(Application.Name, projectDir)
+	projectInit(ProjectData.Name, projectDir)
 	pixriLogger.Log.Info("Project root for generated codes :", ProjectData.Root)
 	return ProjectData
 }
@@ -57,9 +59,47 @@ func createProject(projectName string, generatedRoot string) {
 	//now := time.Now()
 	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName+"", "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
 	cmd.Dir = generatedRoot
-	out, err := cmd.Output()
-	pixriLogger.Log.Info("Project init",string(out))
-	if err !=nil {
+	displayOutput(*cmd)
+
+	//out, err := cmd.CombinedOutput()
+	//pixriLogger.Log.Info("Project init",string(out))
+	//if err !=nil {
+	//	pixriLogger.Log.Error("cmd.Run() failed with %s\n", err)
+	//}
+}
+
+
+func displayOutput(cmd exec.Cmd) {
+	var stdoutBuf, stderrBuf bytes.Buffer
+	stdoutIn, _ := cmd.StdoutPipe()
+	stderrIn, _ := cmd.StderrPipe()
+
+	var errStdout, errStderr error
+	stdout := io.MultiWriter(os.Stdout, &stdoutBuf)
+	stderr := io.MultiWriter(os.Stderr, &stderrBuf)
+	err := cmd.Start()
+	if err != nil {
+		pixriLogger.Log.Error("cmd.Start() failed with '%s'\n", err)
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+
+	go func() {
+		_, errStdout = io.Copy(stdout, stdoutIn)
+		wg.Done()
+	}()
+
+	_, errStderr = io.Copy(stderr, stderrIn)
+	wg.Wait()
+
+	err = cmd.Wait()
+	if err != nil {
 		pixriLogger.Log.Error("cmd.Run() failed with %s\n", err)
 	}
+	if errStdout != nil || errStderr != nil {
+		pixriLogger.Log.Error("failed to capture stdout or stderr\n")
+	}
+	outStr, errStr := string(stdoutBuf.Bytes()), string(stderrBuf.Bytes())
+	pixriLogger.Log.Error("\nout:\n%s\nerr:\n%s\n", outStr, errStr)
 }

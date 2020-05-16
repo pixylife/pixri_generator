@@ -8,9 +8,9 @@ import (
 )
 
 func CreateMain(generatedRoot string,projectName string)  {
-	modelRoot := generatedRoot+filepath.FromSlash(env.Lib)
-	controller.GenerateDir(modelRoot)
+	root := generatedRoot+filepath.FromSlash(env.Lib)
+	controller.GenerateDir(root)
 	tmpl := template.Must(template.ParseFiles("./templates/app/main.tp"))
-	filePath :=modelRoot+"main.dart"
+	filePath :=root+"main.dart"
 	controller.TemplateFileWriter(projectName, filePath, tmpl)
 }
