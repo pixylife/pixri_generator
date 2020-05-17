@@ -4,6 +4,7 @@ import (
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/generator/app"
 	"pixri_generator/pkg/generator/entity"
+	"pixri_generator/pkg/generator/ui"
 	"pixri_generator/pkg/generator/ui/crud"
 )
 
@@ -23,9 +24,11 @@ func GenerateModelFunctions(projectDir string, generatedRoot string){
 		crud.CreateListViewUI(generatedRoot, model)
 		crud.CreateCRUDPageUI(generatedRoot, model)
 	}
+	ui.CreateHomeClass(generatedRoot,models)
 }
 
 func ModifyProjectFiles(project app.Project){
+	pixriLogger.Log.Debug("Modifying Project files :")
 	app.UpdatePubspec(project)
 	app.CreateAppClass(project)
 	app.CreateMain(project.Root,project.Name)

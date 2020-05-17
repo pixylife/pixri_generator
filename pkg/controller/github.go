@@ -17,12 +17,15 @@ import (
 	"time"
 )
 
-var owner = "pixylife"
 
 var (
 	authorName    = flag.String("author-name", "pixylife", "Name of the author of the commit.")
 	authorEmail   = flag.String("author-email", "sahanvijaya@gmail.com", "Email of the author of the commit.")
 	commitMessage = flag.String("commit-message", "Adding Project", "Content of the commit message.")
+	baseBranch    = flag.String("base-branch", "master", "Name of branch to create the `commit-branch` from.")
+	sourceOwner   = flag.String("source-owner", "pixylife", "Name of the owner (user or org) of the repo to create the commit in.")
+	commitBranch  = flag.String("commit-branch", "dev", "Name of branch to create the commit in. If it does not already exists, it will be created using the `base-branch` parameter")
+
 )
 
 func CreateRepository(appName string) (*github.Repository, *github.Response, error) {
@@ -32,7 +35,7 @@ func CreateRepository(appName string) (*github.Repository, *github.Response, err
 	fmt.Println(name)
 	repo := &github.Repository{
 		Name:    github.String(name),
-		Private: github.Bool(true),
+		Private: github.Bool(false),
 	}
 
 	return getClient().Repositories.Create(ctx, "", repo)
@@ -68,7 +71,7 @@ func exe(targetDir string, command string, args []string) bool {
 	return true
 }
 
-func exeClone(url string, localDir string) error {
+func GitClone(url string, localDir string) error {
 	pixriLogger.Log.Debug(" cloning started : ", url)
 	arguments := []string{"clone", url}
 	val := exe(localDir, "git", arguments)
@@ -82,7 +85,7 @@ func exeClone(url string, localDir string) error {
 func CreateCommitPush(ref *github.Reference, tree *github.Tree, repoName string) error {
 	ctx := context.Background()
 
-	parent, _, err := getClient().Repositories.GetCommit(ctx, owner, repoName, *ref.Object.SHA)
+	parent, _, err := getClient().Repositories.GetCommit(ctx,*sourceOwner, repoName, *ref.Object.SHA)
 	if err != nil {
 		return err
 	}
@@ -92,12 +95,12 @@ func CreateCommitPush(ref *github.Reference, tree *github.Tree, repoName string)
 	author := &github.CommitAuthor{Date: &date, Name: authorName, Email: authorEmail}
 	commit := &github.Commit{Author: author, Message: commitMessage, Tree: tree, Parents: []github.Commit{*parent.Commit}}
 
-	newCommit, _, err := getClient().Git.CreateCommit(ctx, owner, repoName, commit)
+	newCommit, _, err := getClient().Git.CreateCommit(ctx, *sourceOwner, repoName, commit)
 	if err != nil {
 		return err
 	}
 	ref.Object.SHA = newCommit.SHA
-	_, _, err = getClient().Git.UpdateRef(ctx, owner, repoName, ref, false)
+	_, _, err = getClient().Git.UpdateRef(ctx, *sourceOwner, repoName, ref, false)
 
 	return err
 }
@@ -105,7 +108,7 @@ func CreateCommitPush(ref *github.Reference, tree *github.Tree, repoName string)
 func GetTree(ref *github.Reference, rootpath string, repoName string) (tree *github.Tree, err error) {
 	ctx := context.Background()
 
-	entries := []github.TreeEntry{}
+	var entries []github.TreeEntry
 
 	fileList := ListAllFiles(rootpath)
 	// Load each file into the tree.
@@ -116,8 +119,7 @@ func GetTree(ref *github.Reference, rootpath string, repoName string) (tree *git
 		}
 		entries = append(entries, github.TreeEntry{Path: github.String(file), Type: github.String("blob"), Content: github.String(string(content)), Mode: github.String("100644")})
 	}
-
-	tree, _, err = getClient().Git.CreateTree(ctx, owner, repoName, *ref.Object.SHA, entries)
+	tree, _, err = getClient().Git.CreateTree(ctx,*sourceOwner, repoName, *ref.Object.SHA, entries)
 	return tree, err
 }
 
@@ -160,6 +162,35 @@ func ListAllFiles(root string) *[]string {
 	return &files
 }
 
+func GetRef(repoName string) (ref *github.Reference, err error) {
+
+	ctx := context.Background()
+
+	if ref, _, err = getClient().Git.GetRef(ctx, *sourceOwner, repoName, "refs/heads/"+*commitBranch); err == nil {
+		return ref, nil
+	}
+
+	// We consider that an error means the branch has not been found and needs to
+	// be created.
+	if *commitBranch == *baseBranch {
+		return nil, errors.New("The commit branch does not exist but `-base-branch` is the same as `-commit-branch`")
+	}
+
+	if *baseBranch == "" {
+		return nil, errors.New("The `-base-branch` should not be set to an empty string when the branch specified by `-commit-branch` does not exists")
+	}
+
+	var baseRef *github.Reference
+	if baseRef, _, err = getClient().Git.GetRef(ctx, *sourceOwner, repoName, "refs/heads/"+*baseBranch); err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	newRef := &github.Reference{Ref: github.String("refs/heads/" + *commitBranch), Object: &github.GitObject{SHA: baseRef.Object.SHA}}
+	ref, _, err = getClient().Git.CreateRef(ctx, *sourceOwner, repoName, newRef)
+	return ref, err
+}
+
+
 func SetRemote(url string, localDir string) error {
 	pixriLogger.Log.Debug(" Setting remote started : ", url)
 	arguments := []string{"remote", "add", "origin", url}
@@ -181,3 +212,57 @@ func GitInit(localDir string) error {
 	}
 	return nil
 }
+
+func GitPush(targetDir string,branchName string)  {
+	pixriLogger.Log.Debug("exeGitpush for : ",branchName)
+
+	arguments :=[]string{"push", "origin", branchName}
+	val :=exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+}
+
+
+func GitCommit(targetDir string,message string)  {
+	pixriLogger.Log.Debug("exe Git commit")
+	arguments :=[]string{"commit", "-m", "\""+message+"\""}
+	val :=exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+}
+
+
+func GitAddAll(targetDir string)  {
+	pixriLogger.Log.Debug("exe Git add")
+	arguments :=[]string{"add", "."}
+	val :=exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+}
+
+func exeCheckoutBranch(targetDir string,branchName string)  {
+	pixriLogger.Log.Debug(" exeCheckoutBranch ")
+	arguments :=[]string{"checkout","-f","-B",branchName}
+	val :=exe(targetDir,"git",arguments)
+	if  val {
+		defer exeClearRootDirectory(targetDir,branchName)
+	}
+	pixriLogger.Log.Debug("command status : ",val)
+}
+
+func exeGitPull(targetDir string, branchName string)  {
+	pixriLogger.Log.Debug(" exeGitPull ")
+	arguments :=[]string{"pull", "origin",branchName}
+	val :=exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+}
+
+
+func exeClearRootDirectory(targetDir string,branchName string)  {
+	pixriLogger.Log.Debug(" clear other resources int the directory : ",targetDir)
+	arguments :=[]string{"reset", "--hard","origin/master"}
+	val :=exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+
+	arguments =[]string{"clean", "-f","-d"}
+	val =exe(targetDir,"git",arguments)
+	pixriLogger.Log.Debug("command status : ",val)
+}
+

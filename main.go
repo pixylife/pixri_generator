@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/generator"
 )
@@ -8,11 +9,14 @@ import (
 func main()  {
 	var projectDir = "sample";
 	project := generator.GenerateInit(projectDir)
-	_ = controller.GitInit(project.Root)
-	_ = controller.SetRemote("https://github.com/pixylife/Test-1589634460-Pixri", project.Root)
+	generator.GenerateModelFunctions(projectDir,project.Root)
+	generator.ModifyProjectFiles(project)
+	fmt.Println("XXXXXXXXXXXXXXXXXXXXx")
+	fmt.Println(project.Root)
+	controller.GitAddAll(project.Root)
+	controller.GitCommit(project.Root,"Initial Commit")
+	controller.GitPush(project.Root,"master")
 
-	//generator.GenerateModelFunctions(projectDir,project.Root)
-	//generator.ModifyProjectFiles(project)
 
 
 /*	e := echo.New()

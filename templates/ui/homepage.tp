@@ -1,0 +1,57 @@
+{{define "UI-Home-Page"}}
+
+{{- range $v := .imports}}
+import 'package:{{$v}}';
+{{- end}}
+import 'package:flutter/material.dart';
+
+final GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
+
+class HomePage extends StatefulWidget {
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+class HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldState,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text("Fast", style: TextStyle(color: Colors.white)),
+      ),
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                 {{- range $v := .pages}}
+                     {{template "Home-Container" $v}}
+                 {{- end}}
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+ {{end}}

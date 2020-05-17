@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"pixri_generator/pixriLogger"
+	"pixri_generator/pkg/controller"
+	"pixri_generator/pkg/model"
 	"sync"
 )
 
@@ -22,10 +24,17 @@ type Project struct {
 	} `json:"properties"`
 	Root       string
 	Packgeroot string
+	GitRepoData GitRepoData
+}
+
+type GitRepoData struct {
+	Name string
+	URL string
+	CloneURL string
 }
 
 var ProjectData = Project{}
-//var Application = model.Application{}
+var Application = model.Application{}
 
 func GetProject(projectDir string) Project {
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
@@ -36,10 +45,19 @@ func GetProject(projectDir string) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-	rootLocation := projectDir + "/generated/" + ProjectData.Name
+
+	repo,_,_ :=controller.CreateRepository(ProjectData.Name)
+
+	var git = GitRepoData{}
+	git.Name = *repo.Name
+	git.URL = *repo.URL
+	git.CloneURL = *repo.CloneURL
+	ProjectData.GitRepoData = git
+
+
+	rootLocation := projectDir + "/generated/"+ProjectData.GitRepoData.Name+"/"+ProjectData.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
-			projectInit(ProjectData.Name,projectDir)
 		}else{
 			pixriLogger.Log.Info("Project root is exist , ignore project Init step")
 		}
@@ -49,23 +67,18 @@ func GetProject(projectDir string) Project {
 	return ProjectData
 }
 
-func projectInit(projectName string, projectDir string){
-	pixriLogger.Log.Info("Initialization of the project :", projectName)
+func projectInit(appName string, projectDir string){
+	pixriLogger.Log.Info("Initialization of the project :", appName)
 	generatedRoot := projectDir + "/generated"
-	createProject(projectName, generatedRoot)
+	_ = controller.GitClone(ProjectData.GitRepoData.CloneURL, generatedRoot)
+	generatedRoot= generatedRoot+"/"+ProjectData.GitRepoData.Name
+	createProject(appName, generatedRoot)
 	}
 
 func createProject(projectName string, generatedRoot string) {
-	//now := time.Now()
-	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName+"", "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
+	cmd := exec.Command("flutter", "create", "--org", "io.pixri."+projectName, "-i", "swift", "-a", "kotlin", "--description", "'"+projectName +" mobile app'", projectName)
 	cmd.Dir = generatedRoot
 	displayOutput(*cmd)
-
-	//out, err := cmd.CombinedOutput()
-	//pixriLogger.Log.Info("Project init",string(out))
-	//if err !=nil {
-	//	pixriLogger.Log.Error("cmd.Run() failed with %s\n", err)
-	//}
 }
 
 
