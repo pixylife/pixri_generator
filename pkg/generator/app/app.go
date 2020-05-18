@@ -16,12 +16,12 @@ func CreateAppClass(project Project)  {
 
 	var imports []string
 
-	imports = append(imports,  project.Name+env.Src+env.UI_PATH+"home/Home"+env.PageSuffix)
+	imports = append(imports,  project.Name+env.Src+env.UI_PATH+"home"+env.DartExtension)
 
 	data := make(map[string]interface{})
 	data["imports"] = imports
 	data["title"] = project.Name
-	data["body"] = "Home"+env.Page
+	data["body"] = "HomePage"
 
 	filePath :=fileRoot+"app.dart"
 	controller.TemplateFileWriter(data, filePath, tmpl)

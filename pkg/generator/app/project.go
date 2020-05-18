@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
-	"pixri_generator/pkg/model"
 	"sync"
 )
 
@@ -34,9 +33,8 @@ type GitRepoData struct {
 }
 
 var ProjectData = Project{}
-var Application = model.Application{}
 
-func GetProject(projectDir string) Project {
+func GetProject(projectDir string, request controller.GenRequest) Project {
 	pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
 	if er != nil {
@@ -45,7 +43,13 @@ func GetProject(projectDir string) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
+
+	/*app := request.Application
+	ProjectData.Name = app.Name
+	ProjectData.Description = app.Description*/
+
 /*
+
 	repo,_,_ :=controller.CreateRepository(ProjectData.Name)
 
 	var git = GitRepoData{}

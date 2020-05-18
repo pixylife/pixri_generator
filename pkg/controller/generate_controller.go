@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"pixri_generator/pkg/model"
@@ -21,13 +20,13 @@ type GenEntity struct {
 
 func GenerateApplication(c echo.Context) error {
 
-	fmt.Println(c.Request())
-
 	generateRequest := GenRequest{}
 	if error := c.Bind(&generateRequest); error != nil {
 		return error
 	}
-	return c.JSON(http.StatusOK, generateRequest)
+
+
+	return c.JSON(http.StatusOK, "Request Submitted")
 }
 
 func GenerateController(g *echo.Group, contextRoot string) {

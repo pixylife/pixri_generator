@@ -48,9 +48,10 @@ class _{{.class}}State extends State<{{.class}}> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+      body: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+          child: ListView(
+            shrinkWrap: true,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(16.0),
