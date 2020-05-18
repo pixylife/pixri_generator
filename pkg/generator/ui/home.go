@@ -19,10 +19,21 @@ type PageData struct {
 
 func CreateHomeClass(generatedRoot string,models []entity.Model)  {
 	fileRoot := generatedRoot + filepath.FromSlash(env.Root+env.UI_PATH)
+	tmpl := template.New("UI-Home-Page")
+	//adding template functions
+	funcMap := template.FuncMap{}
+	funcMap["dict"] = functions.Dict
+	funcMap["plus1"] = functions.Plus1
+	funcMap["first_letter_to_upper"] = functions.FirstLetterUpper
+	funcMap["first_letter_to_lower"] = functions.MakeFirstLowerCase
+	tmpl.Funcs(funcMap)
+
+
+
 	controller.GenerateDir(fileRoot)
-	tmpl := template.Must(template.ParseFiles(
+	tmpl,_ = tmpl.ParseFiles(
 		"./templates/ui/homepage.tp",
-		"./templates/ui/widget/home_page_button_card.tp"))
+		"./templates/ui/widget/home_page_button_card.tp")
 
 
 	var imports []string
@@ -39,5 +50,5 @@ func CreateHomeClass(generatedRoot string,models []entity.Model)  {
 	data["pages"] = pages
 
 	filePath :=fileRoot+"home.dart"
-	controller.TemplateFileWriter(data, filePath, tmpl)
+	controller.TemplateFileWriterByName(data, filePath, tmpl, "UI-Home-Page")
 }

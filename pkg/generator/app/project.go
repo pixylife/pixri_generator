@@ -45,7 +45,7 @@ func GetProject(projectDir string) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-
+/*
 	repo,_,_ :=controller.CreateRepository(ProjectData.Name)
 
 	var git = GitRepoData{}
@@ -53,9 +53,10 @@ func GetProject(projectDir string) Project {
 	git.URL = *repo.URL
 	git.CloneURL = *repo.CloneURL
 	ProjectData.GitRepoData = git
+*/
 
-
-	rootLocation := projectDir + "/generated/"+ProjectData.GitRepoData.Name+"/"+ProjectData.Name
+	//rootLocation := projectDir + "/generated/"+ProjectData.GitRepoData.Name+"/"+ProjectData.Name
+	rootLocation := projectDir + "/generated/"+ProjectData.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
 		}else{

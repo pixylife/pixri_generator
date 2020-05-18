@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/generator"
 )
 
@@ -13,9 +12,9 @@ func main()  {
 	generator.ModifyProjectFiles(project)
 	fmt.Println("XXXXXXXXXXXXXXXXXXXXx")
 	fmt.Println(project.Root)
-	controller.GitAddAll(project.Root)
-	controller.GitCommit(project.Root,"Initial Commit")
-	controller.GitPush(project.Root,"master")
+	//controller.GitAddAll(project.Root)
+	//controller.GitCommit(project.Root,"Initial Commit")
+	//controller.GitPush(project.Root,"master")
 
 
 
