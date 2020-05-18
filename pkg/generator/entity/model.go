@@ -10,6 +10,7 @@ import (
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/env"
 	"pixri_generator/pkg/generator/app"
+	"pixri_generator/pkg/model"
 	"strings"
 	"text/template"
 )
@@ -150,9 +151,9 @@ func createEntityRelationshipStatements(u *Model) {
 	}
 }
 
-func GenerateModel(projectDir string, generatedRoot string) []Model {
+func GenerateModel(generatedRoot string,request model.GenRequest) []Model {
 	var modelList []Model
-	models := readEntityJson(projectDir)
+	models := modelParser(request)
 	for _, model := range models {
 		model.Modify()
 		modelMap[model.Name] = model
@@ -184,4 +185,29 @@ func createModel(generatedRoot string, model Model) {
 
 	filePath := modelRoot + model.Name + ".dart"
 	controller.TemplateFileWriter(data, filePath, tmpl)
+}
+
+
+func modelParser(request model.GenRequest) []Model {
+	var models []Model
+	for _,entity := range request.Entity {
+		var model = Model{}
+		model.Name = functions.SpaceStringsBuilder(entity.Entity.Name)
+		var fields []Field
+		for _,field := range entity.Fields{
+			var f = Field{}
+			f.FieldName =functions.SpaceStringsBuilder(field.Name)
+			f.FieldUIName = field.UIName
+			f.FieldType = field.Type
+
+			fields = append(fields,f)
+		}
+
+		model.Fields = fields
+
+		models = append(models,model)
+	}
+
+
+	return models
 }

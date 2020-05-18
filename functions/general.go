@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"strings"
+	"unicode"
 )
 
 
@@ -45,4 +46,15 @@ func MakeFirstLowerCase(s string) string {
 	rest := bts[1:]
 
 	return string(bytes.Join([][]byte{lc, rest}, nil))
+}
+
+func SpaceStringsBuilder(str string) string {
+	var b strings.Builder
+	b.Grow(len(str))
+	for _, ch := range str {
+		if !unicode.IsSpace(ch) {
+			b.WriteRune(ch)
+		}
+	}
+	return b.String()
 }

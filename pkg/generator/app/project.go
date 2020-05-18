@@ -2,14 +2,13 @@ package app
 
 import (
 	"bytes"
-	"encoding/json"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
+	"pixri_generator/pkg/model"
 	"sync"
 )
 
@@ -34,8 +33,8 @@ type GitRepoData struct {
 
 var ProjectData = Project{}
 
-func GetProject(projectDir string, request controller.GenRequest) Project {
-	pixriLogger.Log.Debug("Project Directory : ", projectDir)
+func GetProject(projectDir string, request model.GenRequest) Project {
+	/*pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
 	if er != nil {
 		pixriLogger.Log.Error("Error while reading project json", er)
@@ -43,12 +42,12 @@ func GetProject(projectDir string, request controller.GenRequest) Project {
 	if er := json.Unmarshal(pj, &ProjectData); er != nil {
 		pixriLogger.Log.Error("Error while Unmarshal project json", er)
 	}
-
-	/*app := request.Application
+*/
+	app := request.Application
 	ProjectData.Name = app.Name
-	ProjectData.Description = app.Description*/
+	ProjectData.Description = app.Description
 
-/*
+
 
 	repo,_,_ :=controller.CreateRepository(ProjectData.Name)
 
@@ -57,10 +56,10 @@ func GetProject(projectDir string, request controller.GenRequest) Project {
 	git.URL = *repo.URL
 	git.CloneURL = *repo.CloneURL
 	ProjectData.GitRepoData = git
-*/
 
-	//rootLocation := projectDir + "/generated/"+ProjectData.GitRepoData.Name+"/"+ProjectData.Name
-	rootLocation := projectDir + "/generated/"+ProjectData.Name
+
+	rootLocation := projectDir + "/generated/"+ProjectData.GitRepoData.Name+"/"+ProjectData.Name
+	//rootLocation := projectDir + "/generated/"+ProjectData.Name
 		if _, err := os.Stat(filepath.FromSlash(rootLocation)); os.IsNotExist(err) {
 			pixriLogger.Log.Debug( "Project root is not exist , creating",rootLocation)
 		}else{
