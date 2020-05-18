@@ -14,6 +14,8 @@ func GenerateApp(c echo.Context) error {
 		return error
 	}
 
+	go GenerateApplication(generateRequest)
+
 	return c.JSON(http.StatusOK, "Request Submitted")
 }
 
