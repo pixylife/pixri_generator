@@ -5,7 +5,7 @@ showDialog(
                                   return AlertDialog(
                                     title: Text("Warning"),
                                     content: Text(
-                                        "Are you sure want to delete data profile ${profile.name}?"),
+                                        "Are you sure want to delete ${profile.name}?"),
                                     actions: <Widget>[
                                       FlatButton(
                                         child: Text("Yes"),

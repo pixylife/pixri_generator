@@ -54,12 +54,14 @@ type Relationship struct {
 func (u *Model) Modify() {
 	for i, model := range u.Fields {
 		u.Fields[i].FieldUIName = strings.Title(u.Fields[i].FieldUIName)
+		u.Fields[i].FieldName = strings.ToLower(u.Fields[i].FieldName)
 		switch model.FieldType {
-		case env.Integer:
+		case env.Integer,env.Number:
 			u.Fields[i].FieldType = "int"
-		case env.String:
+		case env.String,env.Text:
 			u.Fields[i].FieldType = "String"
 		}
+
 	}
 	createEntityRelationshipStatements(u)
 }
@@ -182,6 +184,7 @@ func createModel(generatedRoot string, model Model) {
 
 	data["model"] = model
 	data["imports"] = imports
+
 
 	filePath := modelRoot + model.Name + ".dart"
 	controller.TemplateFileWriter(data, filePath, tmpl)

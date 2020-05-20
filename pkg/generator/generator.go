@@ -1,6 +1,7 @@
 package generator
 
 import (
+	"fmt"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/generator/app"
@@ -22,8 +23,10 @@ func GenerateInit(projectDir string,request model.GenRequest) app.Project {
 	return project
 }
 
-func GenerateModelFunctions(generatedRoot string,request model.GenRequest){
+func GenerateModelFunctions(project app.Project,request model.GenRequest){
+	generatedRoot := project.Root
 	models := entity.GenerateModel(generatedRoot,request)
+	fmt.Println(models)
 	for _,model := range models {
 		crud.CreateFormUI(generatedRoot, model)
 		crud.CreateListViewUI(generatedRoot, model)
@@ -45,7 +48,7 @@ func ModifyProjectFiles(project app.Project){
 func GenerateApplication(request model.GenRequest){
 	var projectDir = "sample"
 	project := GenerateInit(projectDir,request)
-	GenerateModelFunctions(projectDir,request)
+	GenerateModelFunctions(project,request)
 	ModifyProjectFiles(project)
 	controller.GitAddAll(project.Root)
 	controller.GitCommit(project.Root,"Initial Commit")

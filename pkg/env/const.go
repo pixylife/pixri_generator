@@ -21,6 +21,8 @@ const DartExtension = ".dart"
 //////////////////Data types/////////////////////
 const String  = "String"
 const Integer  = "Integer"
+const Text  = "Text"
+const Number  = "Number"
 
 /////////////Classes////////////////////////////////
 const API_Class  = "_api_service"

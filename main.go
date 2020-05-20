@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"pixri_generator/pkg/generator"
+	"pixri_generator/ws"
 )
 
 func main()  {
@@ -17,6 +18,8 @@ func main()  {
 
 	generator.GenerateController(r, "api")
 
+	go ws.Manager.Start()
+	e.GET("/ws/:userName", ws.WsPage)
 
 	e.Logger.Fatal(e.Start(":5003"))
 }
