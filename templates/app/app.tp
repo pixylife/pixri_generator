@@ -10,8 +10,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: Colors.orange,
-        accentColor: Colors.orangeAccent,
+        primaryColor: HexColor({{.theme.PrimaryColor}}),
+        accentColor: HexColor({{.theme.SecondaryColor}}),
+        primaryColorDark: HexColor({{.theme.PrimaryDarkColor}}),
       ),
       home: Scaffold(
         key: _scaffoldState,

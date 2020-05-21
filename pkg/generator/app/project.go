@@ -2,10 +2,12 @@ package app
 
 import (
 	"bytes"
+	"github.com/google/go-github/github"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"pixri_generator/functions"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/model"
@@ -32,8 +34,9 @@ type GitRepoData struct {
 }
 
 var ProjectData = Project{}
+var ProjectResponse = model.GenResponse{}
 
-func GetProject(projectDir string, request model.GenRequest) Project {
+func GetProject(projectDir string, request model.GenRequest, repo *github.Repository) Project {
 	/*pixriLogger.Log.Debug("Project Directory : ", projectDir)
 	pj, er := ioutil.ReadFile(projectDir + "/project.json")
 	if er != nil {
@@ -44,12 +47,9 @@ func GetProject(projectDir string, request model.GenRequest) Project {
 	}
 */
 	app := request.Application
-	ProjectData.Name = app.Name
+	ProjectData.Name = functions.SpaceStringsBuilder(app.Name)
 	ProjectData.Description = app.Description
 
-
-
-	repo,_,_ :=controller.CreateRepository(ProjectData.Name)
 
 	var git = GitRepoData{}
 	git.Name = *repo.Name

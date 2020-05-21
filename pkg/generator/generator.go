@@ -2,6 +2,7 @@ package generator
 
 import (
 	"fmt"
+	"github.com/google/go-github/github"
 	"pixri_generator/pixriLogger"
 	"pixri_generator/pkg/controller"
 	"pixri_generator/pkg/generator/app"
@@ -9,6 +10,7 @@ import (
 	"pixri_generator/pkg/generator/test"
 	"pixri_generator/pkg/generator/ui"
 	"pixri_generator/pkg/generator/ui/crud"
+	"pixri_generator/pkg/generator/util"
 	"pixri_generator/pkg/model"
 )
 
@@ -16,9 +18,9 @@ var project app.Project
 
 
 
-func GenerateInit(projectDir string,request model.GenRequest) app.Project {
+func GenerateInit(projectDir string,request model.GenRequest,repo *github.Repository) app.Project {
 	pixriLogger.Log.Debug("Generating : Init")
-	project = app.GetProject(projectDir,request)
+	project = app.GetProject(projectDir,request,repo)
 	project.Packgeroot = project.Name
 	return project
 }
@@ -35,21 +37,22 @@ func GenerateModelFunctions(project app.Project,request model.GenRequest){
 	ui.CreateHomeClass(generatedRoot,models)
 }
 
-func ModifyProjectFiles(project app.Project){
+func ModifyProjectFiles(project app.Project,request model.GenRequest){
 	pixriLogger.Log.Debug("Modifying Project files :")
 	app.UpdatePubspec(project)
-	app.CreateAppClass(project)
+	app.CreateAppClass(project,request.Theme)
 	app.CreateMain(project.Root,project.Name)
 	test.CreateTestClass(project.Root,project.Name)
 
 }
 
 
-func GenerateApplication(request model.GenRequest){
+func GenerateApplication(request model.GenRequest,repo *github.Repository){
 	var projectDir = "sample"
-	project := GenerateInit(projectDir,request)
+	project := GenerateInit(projectDir,request,repo)
 	GenerateModelFunctions(project,request)
-	ModifyProjectFiles(project)
+	util.CreateHexColorUtil(project.Root)
+	ModifyProjectFiles(project,request)
 	controller.GitAddAll(project.Root)
 	controller.GitCommit(project.Root,"Initial Commit")
 	controller.GitPush(project.Root,"master")
