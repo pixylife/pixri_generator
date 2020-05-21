@@ -39,6 +39,7 @@ func GenerateModelFunctions(project app.Project,request model.GenRequest){
 
 func ModifyProjectFiles(project app.Project,request model.GenRequest){
 	pixriLogger.Log.Debug("Modifying Project files :")
+	
 	app.UpdatePubspec(project)
 	app.CreateAppClass(project,request.Theme)
 	app.CreateMain(project.Root,project.Name)
